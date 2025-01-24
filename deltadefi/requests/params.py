@@ -1,7 +1,5 @@
 from typing import TypedDict, List
-
-class Asset(TypedDict):
-    pass # TODO: import Asset
+from sidan_gin import Asset
 
 class InputUtxos(TypedDict):
     tx_hash: str

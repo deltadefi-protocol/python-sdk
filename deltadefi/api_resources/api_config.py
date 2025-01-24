@@ -1,11 +1,9 @@
-from typing import TypedDict, Literal
-from typing_extensions import NotRequired
-
-class AppWalletKeyType(str):
-    pass # TODO: import AppWalletKeyType
+from typing import TypedDict, Literal, Optional
+from sidan_gin import Network
+from pycardano import ExtendedSigningKey
 
 class ApiConfig(TypedDict, total=False):
-    network: NotRequired[Literal['preprod', 'mainnet']]
-    signingKey: NotRequired[AppWalletKeyType]
-    jwt: NotRequired[str]
-    apiKey: NotRequired[str]
+    network: Optional[Network]
+    signingKey: Optional[ExtendedSigningKey]
+    jwt: Optional[str]
+    apiKey: Optional[str]

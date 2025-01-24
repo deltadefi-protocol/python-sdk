@@ -1,7 +1,6 @@
 from typing import TypedDict, List
+from sidan_gin import Asset
 
-class Asset(TypedDict):
-    pass # TODO: import Asset
 
 """
  * DeltaDeFiOrderInfo is a type that represents the information of a DeltaDeFi order.

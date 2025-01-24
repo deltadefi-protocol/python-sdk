@@ -1,11 +1,6 @@
 from typing import TypedDict, List
 from deltadefi.requests.params import InputUtxos
-
-class Asset(TypedDict): 
-    pass # TODO: import Asset
-
-class UTxO(TypedDict): # TODO: import UTxO
-    pass
+from sidan_gin import Asset, UTxO
 
 class TxInParameter(TypedDict): # TODO: import TxInParameter
     txHash: str
