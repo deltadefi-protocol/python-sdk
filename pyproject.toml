@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "deltadefi-python-sdk"
+name = "deltadefi-sdk"
 version = "0.1.0"
 classifiers = [
     "Intended Audience :: Developers",

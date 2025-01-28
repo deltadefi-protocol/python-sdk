@@ -1,6 +1,6 @@
 
 cov: ## check code coverage
-	poetry run pytest -n 4 --cov sidan_gin
+	poetry run pytest -n 4 --cov deltadefi_sdk 
 
 cov-html: cov ## check code coverage and generate an html report
 	poetry run coverage html -d cov_html
