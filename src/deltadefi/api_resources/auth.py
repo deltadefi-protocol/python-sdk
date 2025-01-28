@@ -1,14 +1,16 @@
-from typing import Optional, TypedDict
+from dataclasses import dataclass
+from typing import Optional
 
 
-class AuthHeaders(TypedDict, total=False):
+@dataclass
+class AuthHeaders:
     jwt: str
     apiKey: str
 
 
-class ApiHeaders(TypedDict):
+class ApiHeaders:
     __annotations__ = {
         "Content-Type": str,
         "Authorization": Optional[str],
-        "X-API-KEY": Optional[str]
+        "X-API-KEY": Optional[str],
     }

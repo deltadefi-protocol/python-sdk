@@ -1,4 +1,6 @@
-from typing import List, TypedDict
+# flake8: noqa
+from dataclasses import dataclass
+from typing import List
 
 from sidan_gin import Asset
 
@@ -11,7 +13,8 @@ from sidan_gin import Asset
 """
 
 
-class DeltaDeFiOrderInfo(TypedDict):
+@dataclass
+class DeltaDeFiOrderInfo:
     assetsToPay: List[Asset]
     assetsToReturn: List[Asset]
     txFee: str
@@ -29,7 +32,8 @@ class DeltaDeFiOrderInfo(TypedDict):
 """
 
 
-class DeltaDeFiTxInfo(TypedDict):
+@dataclass
+class DeltaDeFiTxInfo:
     accountInput: List[Asset]
     accountOutput: List[Asset]
     dexInput: List[DeltaDeFiOrderInfo]

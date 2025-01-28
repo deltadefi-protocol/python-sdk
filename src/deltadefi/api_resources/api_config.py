@@ -1,10 +1,12 @@
-from typing import Literal, Optional, TypedDict
+from dataclasses import dataclass
+from typing import Optional
 
 from pycardano import ExtendedSigningKey
 from sidan_gin import Network
 
 
-class ApiConfig(TypedDict, total=False):
+@dataclass
+class ApiConfig:
     network: Optional[Network]
     signingKey: Optional[ExtendedSigningKey]
     jwt: Optional[str]

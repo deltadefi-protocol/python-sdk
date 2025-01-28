@@ -1,5 +1,3 @@
-from typing import Literal, TypedDict
-
 import requests
 
 from deltadefi.requests import (

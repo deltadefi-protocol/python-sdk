@@ -16,13 +16,16 @@ class BuildDepositTransactionRequest:
     input_utxos: List[UTxO]
 
 
+@dataclass
 class BuildWithdrawalTransactionRequest:
     withdrawal_amount: List[Asset]
 
 
+@dataclass
 class SubmitDepositTransactionRequest:
     signed_tx: str
 
 
+@dataclass
 class SubmitWithdrawalTransactionRequest:
     signed_txs: List[str]
