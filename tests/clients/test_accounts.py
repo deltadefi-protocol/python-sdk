@@ -14,21 +14,18 @@ class TestAccounts(unittest.TestCase):
         api = ApiClient(config={}, wallet=None, base_url="http://localhost:8080")
         sign_in_data: SignInRequest = {
             "wallet_address": "addr_test1qqzgg5pcaeyea69uptl9da5g7fajm4m0yvxndx9f4lxpkehqgezy0s04rtdwlc0tlvxafpdrfxnsg7ww68ge3j7l0lnszsw2wt",
-            "auth_key": "1234",
+            "auth_key": "test",
         }
 
         # Act
-        response = api.accounts.sign_in(sign_in_data)
+        response: SignInResponse = api.accounts.sign_in(sign_in_data)
         print(f"response: {response}")
 
         # Assert
-        self.assertIsInstance(response, SignInResponse)
+        print(f"response: {response}")
         self.assertIn("token", response)
-        self.assertIn("is_ready", response)
+        self.assertIn("is_first_time", response)
 
-
-if __name__ == "__main__":
-    unittest.main()
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,30 +1,6 @@
-from typing import List, Literal, Optional, TypedDict
-
-from sidan_gin import Asset, UTxO
+from typing import Literal, Optional, TypedDict
 
 from deltadefi.models import OrderSide, OrderType, TradingSymbol
-
-
-class SignInRequest(TypedDict):
-    wallet_address: str
-    auth_key: str
-
-
-class BuildDepositTransactionRequest(TypedDict):
-    deposit_amount: List[Asset]
-    input_utxos: List[UTxO]
-
-
-class BuildWithdrawalTransactionRequest(TypedDict):
-    withdrawal_amount: List[Asset]
-
-
-class SubmitDepositTransactionRequest(TypedDict):
-    signed_tx: str
-
-
-class SubmitWithdrawalTransactionRequest(TypedDict):
-    signed_txs: List[str]
 
 
 class GetMarketDepthRequest(TypedDict):

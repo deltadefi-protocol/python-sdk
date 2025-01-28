@@ -10,7 +10,7 @@ from deltadefi.requests import (
 from deltadefi.responses import (
     BuildDepositTransactionResponse,
     BuildWithdrawalTransactionResponse,
-    GenerateNewAPIKeyResponse,
+    CreateNewAPIKeyResponse,
     GetAccountBalanceResponse,
     GetDepositRecordsResponse,
     GetOrderRecordResponse,
@@ -37,6 +37,14 @@ class Accounts:
             f"{self.api_client.base_url}/accounts/signin",
             json={"wallet_address": wallet_address},
             headers=headers,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def createNewApiKey(self) -> CreateNewAPIKeyResponse:
+        response = requests.get(
+            f"{self.api_client.base_url}/accounts/new-api-key",
+            headers=self.api_client.headers,
         )
         response.raise_for_status()
         return response.json()
@@ -68,14 +76,6 @@ class Accounts:
     def getAccountBalance(self) -> GetAccountBalanceResponse:
         response = requests.get(
             f"{self.api_client.base_url}/accounts/balance",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
-
-    def createNewApiKey(self) -> GenerateNewAPIKeyResponse:
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/new-api-key",
             headers=self.api_client.headers,
         )
         response.raise_for_status()

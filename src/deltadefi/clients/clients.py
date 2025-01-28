@@ -20,7 +20,7 @@ class ApiClient:
         wallet: HDWallet,
         base_url: Optional[str] = None,
     ):
-        base_url = base_url or "https://api-dev.deltadefi.io"
+        self.base_url = base_url or "https://api-dev.deltadefi.io"
         headers: ApiHeaders = {
             "Content-Type": "application/json",
         }
@@ -43,11 +43,11 @@ class ApiClient:
         self.orders = Orders(self)
         self.markets = Markets(self)
 
-        async def post_order(self, data: PostOrderRequest) -> PostOrderResponse:
-            if not hasattr(self, "wallet") or self.wallet is None:
-                raise ValueError("Wallet is not initialized")
+    async def post_order(self, data: PostOrderRequest) -> PostOrderResponse:
+        if not hasattr(self, "wallet") or self.wallet is None:
+            raise ValueError("Wallet is not initialized")
 
-            build_res = ""  # TODO: import wallet build order
-            signed_tx = self.wallet.sign_tx(build_res["tx_hex"])
-            submit_res = signed_tx + ""  # TODO: import wallet submit tx
-            return submit_res
+        build_res = ""  # TODO: import wallet build order
+        signed_tx = self.wallet.sign_tx(build_res["tx_hex"])
+        submit_res = signed_tx + ""  # TODO: import wallet submit tx
+        return submit_res

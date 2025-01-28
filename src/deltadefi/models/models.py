@@ -1,4 +1,7 @@
-from typing import Literal, TypedDict
+from dataclasses import dataclass
+from typing import List, Literal
+
+from sidan_gin import Asset
 
 TradingSymbol = Literal["ADAUSDX"]
 
@@ -19,7 +22,17 @@ OrderTypes = {
 }
 
 
-class OrderJSON(TypedDict):
+@dataclass
+class TransactionStatus:
+    building = "building"
+    held_for_order = "held_for_order"
+    submitted = "submitted"
+    submission_failed = "submission_failed"
+    confirmed = "confirmed"
+
+
+@dataclass
+class OrderJSON:
     order_id: str
     status: OrderStatus
     symbol: TradingSymbol
@@ -33,3 +46,25 @@ class OrderJSON(TypedDict):
     slippage: str
     create_time: int
     update_time: int
+
+
+@dataclass
+class DepositRecord:
+    created_at: str
+    status: TransactionStatus
+    assets: List[Asset]
+    tx_hash: str
+
+
+@dataclass
+class WithdrawalRecord:
+    created_at: str
+    status: TransactionStatus
+    assets: List[Asset]
+
+
+@dataclass
+class AssetBalance:
+    asset: str
+    free: int
+    locked: int
