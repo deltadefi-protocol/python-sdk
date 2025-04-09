@@ -25,9 +25,6 @@ class Order(API):
         side: OrderSide,
         type: OrderType,
         quantity: int,
-        price: int = None,
-        max_slippage_basis_point: int = 10000,
-        limit_slippage: bool = False,
         **kwargs,
     ) -> BuildPlaceOrderTransactionResponse:
         """
@@ -98,7 +95,7 @@ class Order(API):
         Returns:
             A SubmitPlaceOrderTransactionResponse object containing the submitted order transaction.
         """
-        check_required_parameters([order_id, "order_id"], [signed_tx, "signed_tx"])
+        check_required_parameters([[order_id, "order_id"], [signed_tx, "signed_tx"]])
         payload = {"order_id": order_id, "signed_tx": signed_tx, **kwargs}
 
         url_path = "/submit"

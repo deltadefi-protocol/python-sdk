@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "deltadefi"
-version = "0.0.5"
+version = "0.0.6"
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
