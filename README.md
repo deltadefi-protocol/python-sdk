@@ -66,12 +66,12 @@ markets_client = api_client.markets
 
 # Get market depth
 market_depth_request = GetMarketDepthRequest(pair="BTC/USD")
-market_depth_response = markets_client.getDepth(market_depth_request)
+market_depth_response = markets_client.get_depth(market_depth_request)
 print(market_depth_response)
 
 # Get market price
 market_price_request = GetMarketPriceRequest(pair="BTC/USD")
-market_price_response = markets_client.getMarketPrice(market_price_request)
+market_price_response = markets_client.get_market_price(market_price_request)
 print(market_price_response)
 ```
 

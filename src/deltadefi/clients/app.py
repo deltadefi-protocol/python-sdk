@@ -17,7 +17,7 @@ class App:
         """
         self.api_client = api_client
 
-    def getTermsAndCondition(self) -> GetTermsAndConditionResponse:
+    def get_terms_and_condition(self) -> GetTermsAndConditionResponse:
         """
         Get terms and conditions.
 

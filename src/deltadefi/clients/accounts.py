@@ -1,3 +1,4 @@
+#
 import requests
 
 from deltadefi.requests import (
@@ -60,7 +61,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def createNewApiKey(self) -> CreateNewAPIKeyResponse:
+    def create_new_api_key(self) -> CreateNewAPIKeyResponse:
         """
         Create a new API key.
 
@@ -74,7 +75,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def getDepositRecords(self) -> GetDepositRecordsResponse:
+    def get_deposit_records(self) -> GetDepositRecordsResponse:
         """
         Get deposit records.
 
@@ -88,7 +89,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def getWithdrawalRecords(self) -> GetWithdrawalRecordsResponse:
+    def get_withdrawal_records(self) -> GetWithdrawalRecordsResponse:
         """
         Get withdrawal records.
 
@@ -102,7 +103,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def getOrderRecords(self) -> GetOrderRecordResponse:
+    def get_order_records(self) -> GetOrderRecordResponse:
         """
         Get order records.
 
@@ -116,7 +117,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def getAccountBalance(self) -> GetAccountBalanceResponse:
+    def get_account_balance(self) -> GetAccountBalanceResponse:
         """
         Get account balance.
 
@@ -130,7 +131,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def buildDepositTransaction(
+    def build_deposit_transaction(
         self, data: BuildDepositTransactionRequest
     ) -> BuildDepositTransactionResponse:
         """
@@ -150,7 +151,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def buildWithdrawalTransaction(
+    def build_withdrawal_transaction(
         self, data: BuildWithdrawalTransactionRequest
     ) -> BuildWithdrawalTransactionResponse:
         """
@@ -170,7 +171,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def submitDepositTransaction(
+    def submit_deposit_transaction(
         self, data: SubmitDepositTransactionRequest
     ) -> SubmitDepositTransactionResponse:
         """
@@ -190,7 +191,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def submitWithdrawalTransaction(
+    def submit_withdrawal_transaction(
         self, data: SubmitWithdrawalTransactionRequest
     ) -> SubmitWithdrawalTransactionResponse:
         """
@@ -210,7 +211,7 @@ class Accounts:
         response.raise_for_status()
         return response.json()
 
-    def getTermsAndCondition(self) -> GetTermsAndConditionResponse:
+    def get_terms_and_condition(self) -> GetTermsAndConditionResponse:
         """
         Get terms and conditions.
 

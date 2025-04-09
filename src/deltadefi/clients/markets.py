@@ -28,7 +28,7 @@ class Markets:
         """
         self.api_client = api_client
 
-    def getDepth(self, data: GetMarketDepthRequest) -> GetMarketDepthResponse:
+    def get_depth(self, data: GetMarketDepthRequest) -> GetMarketDepthResponse:
         """
         Get market depth.
 
@@ -45,7 +45,7 @@ class Markets:
         response.raise_for_status()
         return response.json()
 
-    def getMarketPrice(self, data: GetMarketPriceRequest) -> GetMarketPriceResponse:
+    def get_market_price(self, data: GetMarketPriceRequest) -> GetMarketPriceResponse:
         """
         Get market price.
 
@@ -62,7 +62,7 @@ class Markets:
         response.raise_for_status()
         return response.json()
 
-    def getAggregatedPrice(
+    def get_aggregated_price(
         self, data: GetAggregatedPriceRequest
     ) -> GetAggregatedPriceResponse:
         """
