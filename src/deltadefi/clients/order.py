@@ -25,9 +25,9 @@ class Order(API):
         side: OrderSide,
         type: OrderType,
         quantity: int,
-        price: int,
-        max_slippage_basis_point: int,
-        limit_slippage: bool,
+        price: int = None,
+        max_slippage_basis_point: int = 10000,
+        limit_slippage: bool = False,
         **kwargs,
     ) -> BuildPlaceOrderTransactionResponse:
         """
@@ -41,9 +41,12 @@ class Order(API):
         """
 
         check_required_parameters(
-            [symbol, "symbol"],
-            [side, "side"],
-            [type, "type"],
+            [
+                [symbol, "symbol"],
+                [side, "side"],
+                [type, "type"],
+                [quantity, "quantity"],
+            ]
         )
 
         if type == "limit":
