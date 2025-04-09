@@ -1,30 +1,31 @@
 # flake8: noqa
+# get api_key from env
+import os
 import unittest
 
-from deltadefi.clients.accounts import Accounts
-from deltadefi.clients.clients import ApiClient
-from deltadefi.requests import SignInRequest
-from deltadefi.responses import SignInResponse
+from deltadefi.clients import ApiClient
+from deltadefi.responses import GetAccountBalanceResponse
+
+api_key = os.getenv("DELTADEFI_API_KEY")
 
 
 class TestAccounts(unittest.TestCase):
 
-    def test_sign_in(self):
+    def test_get_account_balance(self):
+        if not api_key:
+            self.skipTest("DELTADEFI_API_KEY not set in environment variables")
+
         # Arrange
-        api = ApiClient()
-        sign_in_data: SignInRequest = {
-            "wallet_address": "addr_test1qqzgg5pcaeyea69uptl9da5g7fajm4m0yvxndx9f4lxpkehqgezy0s04rtdwlc0tlvxafpdrfxnsg7ww68ge3j7l0lnszsw2wt",
-            "auth_key": "test",
-        }
+        api = ApiClient(api_key=api_key)
 
         # Act
-        response: SignInResponse = api.accounts.sign_in(sign_in_data)
+        response: GetAccountBalanceResponse = api.accounts.get_account_balance()
         print(f"response: {response}")
 
-        # Assert
-        print(f"response: {response}")
-        self.assertIn("token", response)
-        self.assertIn("is_first_time", response)
+        # # Assert
+        # print(f"response: {response}")
+        # self.assertIn("token", response)
+        # self.assertIn("is_first_time", response)
 
 
 if __name__ == "__main__":

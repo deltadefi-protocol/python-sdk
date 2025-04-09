@@ -15,13 +15,13 @@ class API(object):
         self.session.headers.update(
             {
                 "Content-Type": "application/json;charset=utf-8",
+                "X-API-KEY": api_key if api_key is not None else "",
             }
         )
 
     def send_request(self, http_method, url_path, payload=None):
         if payload is None:
             payload = {}
-        payload["X-API-KEY"] = self.api_key
         url = self.base_url + url_path
         params = clean_none_value(
             {
@@ -70,6 +70,7 @@ class API(object):
             error_data = None
             if "data" in err:
                 error_data = err["data"]
+            print("Error?", err)
             raise ClientError(
                 status_code, err["code"], err["msg"], response.headers, error_data
             )

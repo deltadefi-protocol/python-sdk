@@ -2,6 +2,7 @@
 
 from typing import Literal
 
+from deltadefi.api import API
 from deltadefi.lib.utils import check_required_parameter, check_required_parameters
 from deltadefi.responses import (
     GetAggregatedPriceResponse,
@@ -10,7 +11,7 @@ from deltadefi.responses import (
 )
 
 
-class Markets:
+class Markets(API):
     """
     Markets client for interacting with the DeltaDeFi API.
     """
