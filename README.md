@@ -26,18 +26,14 @@ from deltadefi.clients.clients import ApiClient
 from sidan_gin import HDWallet
 
 # Initialize API configuration
-config = ApiConfig(
-    network="mainnet",
-    jwt="your_jwt_token",
-    apiKey="your_api_key",
-    signingKey="your_signing_key"
-)
+network="mainnet",
+api_key="your_api_key",
 
 # Initialize HDWallet
 wallet = HDWallet("your_wallet_mnemonic")
 
 # Initialize ApiClient
-api_client = ApiClient(config=config, wallet=wallet)
+api_client = ApiClient(network=network, api_key=api_key, wallet=wallet)
 ```
 
 ### Accounts
