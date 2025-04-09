@@ -7,7 +7,7 @@ The DeltaDeFi Python SDK provides a convenient way to interact with the DeltaDeF
 To install the SDK, use `pip`:
 
 ```sh
-pip install deltadefi-python-sdk
+pip install deltadefi
 ```
 
 ## Requirements
@@ -21,19 +21,18 @@ pip install deltadefi-python-sdk
 To use the SDK, you need to initialize the ApiClient with your API configuration and wallet.
 
 ```python
-from deltadefi.api_resources.api_config import ApiConfig
-from deltadefi.clients.clients import ApiClient
+from deltadefi.clients import ApiClient
 from sidan_gin import HDWallet
 
 # Initialize API configuration
-network="mainnet",
+network="preprod",
 api_key="your_api_key",
 
 # Initialize HDWallet
 wallet = HDWallet("your_wallet_mnemonic")
 
 # Initialize ApiClient
-api_client = ApiClient(network=network, api_key=api_key, wallet=wallet)
+api = ApiClient(network=network, api_key=api_key, wallet=wallet)
 ```
 
 ### Accounts
@@ -41,12 +40,8 @@ api_client = ApiClient(network=network, api_key=api_key, wallet=wallet)
 The Accounts client allows you to interact with account-related endpoints.
 
 ```python
-from deltadefi.clients.accounts import Accounts
-
-accounts_client = api_client.accounts
-
 # Get account balance
-account_balance = accounts_client.get_account_balance()
+account_balance = api.accounts.get_account_balance()
 print(account_balance)
 ```
 
@@ -55,45 +50,30 @@ print(account_balance)
 The Markets client allows you to interact with market-related endpoints.
 
 ```python
-from deltadefi.clients.markets import Markets
-
-markets_client = api_client.markets
-
 # Get market depth
-market_depth_request = GetMarketDepthRequest(pair="BTC/USD")
-market_depth_response = markets_client.get_depth(market_depth_request)
+market_depth = api.markets.get_depth("ADAUSDX")
 print(market_depth_response)
 
 # Get market price
-market_price_request = GetMarketPriceRequest(pair="BTC/USD")
-market_price_response = markets_client.get_market_price(market_price_request)
+market_price_response = api.markets.get_market_price("ADAUSDX")
 print(market_price_response)
 ```
 
-### Orders
+### Order
 
-The Orders client allows you to interact with order-related endpoints.
+The Order client allows you to interact with order-related endpoints.
 
 ```python
-from deltadefi.clients.orders import Orders
-
-orders_client = api_client.orders
-
 # Build place order transaction
 place_order_request = BuildPlaceOrderTransactionRequest(pair="BTC/USD", amount=1, price=50000)
-place_order_response = orders_client.build_place_order_transaction(place_order_request)
+place_order_response = api.order.build_place_order_transaction(symbol="ADAUSDX", amount=50, price=0.75, type="limit")
 print(place_order_response)
 
 # Submit place order transaction
-submit_order_request = SubmitPlaceOrderTransactionRequest(order_id="order_id")
-submit_order_response = orders_client.submit_place_order_transaction(submit_order_request)
+submit_order_response = api.order.submit_place_order_transaction(signed_tx="<signed_tx>", order_id="<order_id>")
 print(submit_order_response)
 ```
 
 ## License
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-
-```
-http://www.apache.org/licenses/LICENSE-2.0
-```
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
