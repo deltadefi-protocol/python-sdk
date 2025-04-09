@@ -45,11 +45,6 @@ from deltadefi.clients.accounts import Accounts
 
 accounts_client = api_client.accounts
 
-# Sign in
-sign_in_request = SignInRequest(auth_key="your_auth_key", wallet_address="your_wallet_address")
-sign_in_response = accounts_client.sign_in(sign_in_request)
-print(sign_in_response)
-
 # Get account balance
 account_balance = accounts_client.get_account_balance()
 print(account_balance)

@@ -1,12 +1,8 @@
 # flake8: noqa: E501
 
-import requests
+from typing import Literal
 
-from deltadefi.requests import (
-    GetAggregatedPriceRequest,
-    GetMarketDepthRequest,
-    GetMarketPriceRequest,
-)
+from deltadefi.lib.utils import check_required_parameter, check_required_parameters
 from deltadefi.responses import (
     GetAggregatedPriceResponse,
     GetMarketDepthResponse,
@@ -19,16 +15,12 @@ class Markets:
     Markets client for interacting with the DeltaDeFi API.
     """
 
-    def __init__(self, api_client):
-        """
-        Initialize the Markets client.
+    group_url_path = "/market"
 
-        Args:
-            api_client: An instance of the ApiClient.
-        """
-        self.api_client = api_client
+    def __init__(self, api_key=None, base_url=None, **kwargs):
+        super().__init__(api_key=api_key, base_url=base_url, **kwargs)
 
-    def get_depth(self, data: GetMarketDepthRequest) -> GetMarketDepthResponse:
+    def get_depth(self, symbol: str, **kwargs) -> GetMarketDepthResponse:
         """
         Get market depth.
 
@@ -38,14 +30,14 @@ class Markets:
         Returns:
             A GetMarketDepthResponse object containing the market depth.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/market/depth?pair={data['pair']}",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
 
-    def get_market_price(self, data: GetMarketPriceRequest) -> GetMarketPriceResponse:
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+        url_path = "/depth"
+
+        return self.send_request("GET", self.group_url_path + url_path, payload)
+
+    def get_market_price(self, symbol: str, **kwargs) -> GetMarketPriceResponse:
         """
         Get market price.
 
@@ -55,15 +47,17 @@ class Markets:
         Returns:
             A GetMarketPriceResponse object containing the market price.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/market/market-price?pair={data['pair']}",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+        url_path = "/market-price"
+        return self.send_request("GET", self.group_url_path + url_path, payload)
 
     def get_aggregated_price(
-        self, data: GetAggregatedPriceRequest
+        self,
+        symbol: str,
+        interval: Literal["15m", "30m", "1h", "1d", "1w", "1M"],
+        start: int,
+        end: int,
     ) -> GetAggregatedPriceResponse:
         """
         Get aggregated price.
@@ -74,9 +68,22 @@ class Markets:
         Returns:
             A GetAggregatedPriceResponse object containing the aggregated price.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/market/aggregate/{data['pair']}?interval={data['interval']}&start={data.get('start', '')}&end={data.get('end', '')}",
-            headers=self.api_client.headers,
+
+        check_required_parameters(
+            [
+                [symbol, "symbol"],
+                [interval, "interval"],
+                [start, "start"],
+                [end, "end"],
+            ]
         )
-        response.raise_for_status()
-        return response.json()
+        url_path = f"/aggregated-trade/{symbol}"
+        return self.send_request(
+            "GET",
+            self.group_url_path + url_path,
+            {
+                "interval": interval,
+                "start": start,
+                "end": end,
+            },
+        )

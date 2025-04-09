@@ -1,63 +1,62 @@
-from __future__ import absolute_import, division, print_function
-
-
-class deltadefi_sdkError(Exception):
-    def __init__(
-        self,
-        message=None,
-        http_body=None,
-        http_status=None,
-        json_body=None,
-        headers=None,
-        code=None,
-    ):
-        super(deltadefi_sdkError, self).__init__(message)
-
-        self._message = message
-        self.http_body = http_body
-        self.http_status = http_status
-        self.json_body = json_body
-        self.headers = headers or {}
-        self.code = code
-        self.request_id = self.headers.get("request-id", None)
-
-
-class APIError(deltadefi_sdkError):
+class Error(Exception):
     pass
 
 
-class deltadefi_sdkErrorWithParamCode(deltadefi_sdkError):
-    def __repr__(self):
-        return "%s(message=%r, param=%r, code=%r, http_status=%r, " "request_id=%r)" % (
-            self.__class__.__name__,
-            self._message,
-            self.param,
-            self.code,
-            self.http_status,
-            self.request_id,
-        )
+class ClientError(Error):
+    def __init__(self, status_code, error_code, error_message, header, error_data=None):
+        # https status code
+        self.status_code = status_code
+        # error code returned from server
+        self.error_code = error_code
+        # error message returned from server
+        self.error_message = error_message
+        # the whole response header returned from server
+        self.header = header
+        # return data if it's returned from server
+        self.error_data = error_data
 
 
-class InvalidRequestError(deltadefi_sdkErrorWithParamCode):
-    def __init__(
-        self,
-        message,
-        param,
-        code=None,
-        http_body=None,
-        http_status=None,
-        json_body=None,
-        headers=None,
-    ):
-        super(InvalidRequestError, self).__init__(
-            message, http_body, http_status, json_body, headers, code
-        )
-        self.param = param
+class ServerError(Error):
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
 
 
-class AuthenticationError(deltadefi_sdkError):
-    pass
+class ParameterRequiredError(Error):
+    def __init__(self, params):
+        self.params = params
+
+    def __str__(self):
+        return "%s is mandatory, but received empty." % (", ".join(self.params))
 
 
-class PermissionError(deltadefi_sdkError):
-    pass
+class ParameterValueError(Error):
+    def __init__(self, params):
+        self.params = params
+
+    def __str__(self):
+        return "the enum value %s is invalid." % (", ".join(self.params))
+
+
+class ParameterTypeError(Error):
+    def __init__(self, params):
+        self.params = params
+
+    def __str__(self):
+        return f"{self.params[0]} data type has to be {self.params[1]}"
+
+
+class ParameterArgumentError(Error):
+    def __init__(self, error_message):
+        self.error_message = error_message
+
+    def __str__(self):
+        return self.error_message
+
+
+class WebsocketClientError(Error):
+    def __init__(self, error_message):
+        self.error_message = error_message
+
+    def __str__(self):
+        return self.error_message

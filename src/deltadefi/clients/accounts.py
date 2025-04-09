@@ -1,13 +1,10 @@
 #
-import requests
+from typing import List
 
-from deltadefi.requests import (
-    BuildDepositTransactionRequest,
-    BuildWithdrawalTransactionRequest,
-    SignInRequest,
-    SubmitDepositTransactionRequest,
-    SubmitWithdrawalTransactionRequest,
-)
+from sidan_gin import Asset, UTxO
+
+from deltadefi.api import API
+from deltadefi.lib.utils import check_required_parameter, check_required_parameters
 from deltadefi.responses import (
     BuildDepositTransactionResponse,
     BuildWithdrawalTransactionResponse,
@@ -15,124 +12,75 @@ from deltadefi.responses import (
     GetAccountBalanceResponse,
     GetDepositRecordsResponse,
     GetOrderRecordResponse,
-    GetTermsAndConditionResponse,
     GetWithdrawalRecordsResponse,
-    SignInResponse,
     SubmitDepositTransactionResponse,
     SubmitWithdrawalTransactionResponse,
 )
 
 
-class Accounts:
+class Accounts(API):
     """
     Accounts client for interacting with the DeltaDeFi API.
     """
 
-    def __init__(self, api_client):
-        """
-        Initialize the Accounts client.
+    group_url_path = "/accounts"
 
-        Args:
-            api_client: An instance of the ApiClient.
-        """
-        self.api_client = api_client
+    def __init__(self, api_key=None, base_url=None, **kwargs):
+        super().__init__(api_key=api_key, base_url=base_url, **kwargs)
 
-    def sign_in(self, data: SignInRequest) -> SignInResponse:
-        """
-        Sign in to the DeltaDeFi API.
-
-        Args:
-            data: A SignInRequest object containing the authentication key and wallet address.
-
-        Returns:
-            A SignInResponse object containing the sign-in response.
-        """
-        auth_key = data["auth_key"]
-        wallet_address = data["wallet_address"]
-        headers = {
-            "X-API-KEY": auth_key,
-            "Content-Type": "application/json",
-        }
-        response = requests.post(
-            f"{self.api_client.base_url}/accounts/signin",
-            json={"wallet_address": wallet_address},
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
-
-    def create_new_api_key(self) -> CreateNewAPIKeyResponse:
+    def create_new_api_key(self, **kwargs) -> CreateNewAPIKeyResponse:
         """
         Create a new API key.
 
         Returns:
             A CreateNewAPIKeyResponse object containing the new API key.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/new-api-key",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
 
-    def get_deposit_records(self) -> GetDepositRecordsResponse:
+        url_path = "/new-api-key"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+
+    def get_deposit_records(self, **kwargs) -> GetDepositRecordsResponse:
         """
         Get deposit records.
 
         Returns:
             A GetDepositRecordsResponse object containing the deposit records.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/deposit-records",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/deposit-records"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
-    def get_withdrawal_records(self) -> GetWithdrawalRecordsResponse:
+    def get_withdrawal_records(self, **kwargs) -> GetWithdrawalRecordsResponse:
         """
         Get withdrawal records.
 
         Returns:
             A GetWithdrawalRecordsResponse object containing the withdrawal records.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/withdrawal-records",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/withdrawal-records"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
-    def get_order_records(self) -> GetOrderRecordResponse:
+    def get_order_records(self, **kwargs) -> GetOrderRecordResponse:
         """
         Get order records.
 
         Returns:
             A GetOrderRecordResponse object containing the order records.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/order-records",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/order-records"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
-    def get_account_balance(self) -> GetAccountBalanceResponse:
+    def get_account_balance(self, **kwargs) -> GetAccountBalanceResponse:
         """
         Get account balance.
 
         Returns:
             A GetAccountBalanceResponse object containing the account balance.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/balance",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/balance"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
     def build_deposit_transaction(
-        self, data: BuildDepositTransactionRequest
+        self, deposit_amount: List[Asset], input_utxos: List[UTxO], **kwargs
     ) -> BuildDepositTransactionResponse:
         """
         Build a deposit transaction.
@@ -143,16 +91,21 @@ class Accounts:
         Returns:
             A BuildDepositTransactionResponse object containing the built deposit transaction.
         """
-        response = requests.post(
-            f"{self.api_client.base_url}/accounts/deposit/build",
-            json=data,
-            headers=self.api_client.headers,
+
+        check_required_parameters(
+            [[deposit_amount, "deposit_amount"], [input_utxos, "input_utxos"]]
         )
-        response.raise_for_status()
-        return response.json()
+        payload = {
+            "deposit_amount": deposit_amount,
+            "input_utxos": input_utxos,
+            **kwargs,
+        }
+
+        url_path = "/deposit/build"
+        return self.send_request("POST", self.group_url_path + url_path, payload)
 
     def build_withdrawal_transaction(
-        self, data: BuildWithdrawalTransactionRequest
+        self, withdrawal_amount: List[Asset], **kwargs
     ) -> BuildWithdrawalTransactionResponse:
         """
         Build a withdrawal transaction.
@@ -163,16 +116,15 @@ class Accounts:
         Returns:
             A BuildWithdrawalTransactionResponse object containing the built withdrawal transaction.
         """
-        response = requests.post(
-            f"{self.api_client.base_url}/accounts/withdrawal/build",
-            json=data,
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+
+        check_required_parameter(withdrawal_amount, "withdrawal_amount")
+        payload = {"withdrawal_amount": withdrawal_amount, **kwargs}
+
+        url_path = "/withdrawal/build"
+        return self.send_request("POST", self.group_url_path + url_path, payload)
 
     def submit_deposit_transaction(
-        self, data: SubmitDepositTransactionRequest
+        self, signed_tx: str, **kwargs
     ) -> SubmitDepositTransactionResponse:
         """
         Submit a deposit transaction.
@@ -183,16 +135,15 @@ class Accounts:
         Returns:
             A SubmitDepositTransactionResponse object containing the submitted deposit transaction.
         """
-        response = requests.post(
-            f"{self.api_client.base_url}/accounts/deposit/submit",
-            json=data,
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+
+        check_required_parameter(signed_tx, "signed_tx")
+        payload = {"signed_tx": signed_tx, **kwargs}
+
+        url_path = "/deposit/submit"
+        return self.send_request("POST", self.group_url_path + url_path, payload)
 
     def submit_withdrawal_transaction(
-        self, data: SubmitWithdrawalTransactionRequest
+        self, signed_tx: str, **kwargs
     ) -> SubmitWithdrawalTransactionResponse:
         """
         Submit a withdrawal transaction.
@@ -203,24 +154,9 @@ class Accounts:
         Returns:
             A SubmitWithdrawalTransactionResponse object containing the submitted withdrawal transaction.
         """
-        response = requests.post(
-            f"{self.api_client.base_url}/accounts/withdrawal/submit",
-            json=data,
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
 
-    def get_terms_and_condition(self) -> GetTermsAndConditionResponse:
-        """
-        Get terms and conditions.
+        check_required_parameter(signed_tx, "signed_tx")
+        payload = {"signed_tx": signed_tx, **kwargs}
 
-        Returns:
-            A GetTermsAndConditionResponse object containing the terms and conditions.
-        """
-        response = requests.get(
-            f"{self.api_client.base_url}/accounts/terms-and-condition",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/withdrawal/submit"
+        return self.send_request("POST", self.group_url_path + url_path, payload)

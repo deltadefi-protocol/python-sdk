@@ -1,32 +1,23 @@
-import requests
-
+from deltadefi.api import API
 from deltadefi.responses import GetTermsAndConditionResponse
 
 
-class App:
+class App(API):
     """
     App client for interacting with the DeltaDeFi API.
     """
 
-    def __init__(self, api_client):
-        """
-        Initialize the App client.
+    group_url_path = "/app"
 
-        Args:
-            api_client: An instance of the ApiClient.
-        """
-        self.api_client = api_client
+    def __init__(self, api_key=None, base_url=None, **kwargs):
+        super().__init__(api_key=api_key, base_url=base_url, **kwargs)
 
-    def get_terms_and_condition(self) -> GetTermsAndConditionResponse:
+    def get_terms_and_condition(self, **kwargs) -> GetTermsAndConditionResponse:
         """
         Get terms and conditions.
 
         Returns:
             A GetTermsAndConditionResponse object containing the terms and conditions.
         """
-        response = requests.get(
-            f"{self.api_client.base_url}/terms-and-conditions",
-            headers=self.api_client.headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        url_path = "/terms-and-conditions"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)

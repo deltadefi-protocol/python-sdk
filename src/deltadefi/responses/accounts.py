@@ -10,12 +10,6 @@ from deltadefi.models.models import (
 
 
 @dataclass
-class SignInResponse:
-    token: str
-    is_first_time: bool
-
-
-@dataclass
 class CreateNewAPIKeyResponse:
     api_key: str
 

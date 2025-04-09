@@ -3,9 +3,9 @@ from sidan_gin import HDWallet
 
 from deltadefi.api_resources.auth import ApiHeaders
 from deltadefi.clients.accounts import Accounts
+from deltadefi.clients.app import App
 from deltadefi.clients.markets import Markets
-from deltadefi.clients.orders import Orders
-from deltadefi.requests import PostOrderRequest
+from deltadefi.clients.order import Order
 from deltadefi.responses import PostOrderResponse
 
 
@@ -17,7 +17,6 @@ class ApiClient:
     def __init__(
         self,
         network: str = "preprod",
-        jwt: str = None,
         api_key: str = None,
         wallet: HDWallet = None,
         base_url: str = None,
@@ -30,11 +29,6 @@ class ApiClient:
             wallet: An instance of HDWallet for signing transactions.
             base_url: Optional; The base URL for the API. Defaults to "https://api-dev.deltadefi.io".
         """
-        self.base_url = base_url or "https://api-dev.deltadefi.io"
-        headers: ApiHeaders = {
-            "Content-Type": "application/json",
-        }
-
         if network == "mainnet":
             self.network_id = 1
             base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
@@ -42,20 +36,16 @@ class ApiClient:
             self.network_id = 0
             base_url = "https://api-dev.deltadefi.io"
 
-        if jwt is not None:
-            headers["Authorization"] = jwt
+        self.api_key = api_key
+        self.wallet = wallet
+        self.base_url = base_url
 
-        if api_key is not None:
-            headers["X-API-KEY"] = api_key
+        self.accounts = Accounts(base_url=base_url, api_key=api_key)
+        self.app = App(base_url=base_url, api_key=api_key)
+        self.order = Order(base_url=base_url, api_key=api_key)
+        self.markets = Markets(base_url=base_url, api_key=api_key)
 
-        if wallet is not None:
-            self.wallet = wallet.signing_key
-
-        self.accounts = Accounts(self)
-        self.orders = Orders(self)
-        self.markets = Markets(self)
-
-    async def post_order(self, data: PostOrderRequest) -> PostOrderResponse:
+    async def post_order(self, **kwargs) -> PostOrderResponse:
         """
         Post an order to the DeltaDeFi API.
 

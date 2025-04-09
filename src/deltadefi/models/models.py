@@ -3,8 +3,6 @@ from typing import List, Literal
 
 from sidan_gin import Asset
 
-TradingSymbol = Literal["ADAUSDX"]
-
 OrderStatus = Literal["building", "open", "closed", "failed"]
 
 OrderSide = Literal["buy", "sell"]
@@ -35,7 +33,7 @@ class TransactionStatus:
 class OrderJSON:
     order_id: str
     status: OrderStatus
-    symbol: TradingSymbol
+    symbol: str
     orig_qty: str
     executed_qty: str
     side: OrderSide
