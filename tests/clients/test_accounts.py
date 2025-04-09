@@ -11,7 +11,7 @@ class TestAccounts(unittest.TestCase):
 
     def test_sign_in(self):
         # Arrange
-        api = ApiClient(config={}, wallet=None, base_url="http://localhost:8080")
+        api = ApiClient()
         sign_in_data: SignInRequest = {
             "wallet_address": "addr_test1qqzgg5pcaeyea69uptl9da5g7fajm4m0yvxndx9f4lxpkehqgezy0s04rtdwlc0tlvxafpdrfxnsg7ww68ge3j7l0lnszsw2wt",
             "auth_key": "test",

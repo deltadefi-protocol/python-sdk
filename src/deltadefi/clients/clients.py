@@ -1,9 +1,6 @@
 # flake8: noqa: E501
-from typing import Optional
-
 from sidan_gin import HDWallet
 
-from deltadefi.api_resources.api_config import ApiConfig
 from deltadefi.api_resources.auth import ApiHeaders
 from deltadefi.clients.accounts import Accounts
 from deltadefi.clients.markets import Markets
@@ -19,9 +16,11 @@ class ApiClient:
 
     def __init__(
         self,
-        config: ApiConfig,
-        wallet: HDWallet,
-        base_url: Optional[str] = None,
+        network: str = "preprod",
+        jwt: str = None,
+        api_key: str = None,
+        wallet: HDWallet = None,
+        base_url: str = None,
     ):
         """
         Initialize the ApiClient.
@@ -36,18 +35,20 @@ class ApiClient:
             "Content-Type": "application/json",
         }
 
-        if config.get("network"):
-            self.network_id = 1 if config["network"] == "mainnet" else 0
-            base_url = (
-                "https://api-dev.deltadefi.io"
-                if config["network"] == "mainnet"
-                else "https://api-dev.deltadefi.io"  # TODO: input production link once available
-            )
-        if config.get("jwt"):
-            headers["Authorization"] = config["jwt"]
-        if config.get("apiKey"):
-            headers["X-API-KEY"] = config["apiKey"]
-        if config.get("signingKey"):
+        if network == "mainnet":
+            self.network_id = 1
+            base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
+        else:
+            self.network_id = 0
+            base_url = "https://api-dev.deltadefi.io"
+
+        if jwt is not None:
+            headers["Authorization"] = jwt
+
+        if api_key is not None:
+            headers["X-API-KEY"] = api_key
+
+        if wallet is not None:
             self.wallet = wallet.signing_key
 
         self.accounts = Accounts(self)
