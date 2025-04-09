@@ -1,6 +1,6 @@
 
 cov: ## check code coverage
-	poetry run pytest -n 4 --cov sidan_gin
+	poetry run pytest -n 4 --cov deltadefi
 
 cov-html: cov ## check code coverage and generate an html report
 	poetry run coverage html -d cov_html
@@ -23,6 +23,7 @@ docs: ## build the documentation
 format: ## runs code style and formatter
 	poetry run isort .
 	poetry run black .
+
 
 deps:
 	poetry lock
