@@ -23,13 +23,23 @@ class API(object):
         if payload is None:
             payload = {}
         url = self.base_url + url_path
-        params = clean_none_value(
-            {
-                "url": url,
-                "params": self._prepare_params(payload),
-                "timeout": self.timeout,
-            }
-        )
+        if http_method.upper() == "GET":
+            params = clean_none_value(
+                {
+                    "url": url,
+                    "params": self._prepare_params(payload),  # Query parameters
+                    "timeout": self.timeout,
+                }
+            )
+        else:
+            params = clean_none_value(
+                {
+                    "url": url,
+                    "json": payload,  # Use 'json' to send payload in the body
+                    "timeout": self.timeout,
+                }
+            )
+
         response = self._dispatch_request(http_method)(**params)
         self._handle_exception(response)
 

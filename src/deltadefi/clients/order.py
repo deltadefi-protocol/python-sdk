@@ -50,11 +50,11 @@ class Order(API):
         )
 
         if type == "limit":
-            check_required_parameter(price, "price")
+            check_required_parameter(kwargs.get("price"), "price")
 
-        if type == "market" and limit_slippage:
+        if type == "market" and kwargs.get("limit_slippage"):
             check_required_parameter(
-                max_slippage_basis_point, "max_slippage_basis_point"
+                kwargs.get("max_slippage_basis_point"), "max_slippage_basis_point"
             )
 
         payload = {
@@ -62,8 +62,6 @@ class Order(API):
             "side": side,
             "type": type,
             "quantity": quantity,
-            "max_slippage_basis_point": max_slippage_basis_point,
-            "limit_slippage": limit_slippage,
             **kwargs,
         }
 
