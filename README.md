@@ -45,17 +45,17 @@ account_balance = api.accounts.get_account_balance()
 print(account_balance)
 ```
 
-### Markets
+### Market
 
-The Markets client allows you to interact with market-related endpoints.
+The Market client allows you to interact with market-related endpoints.
 
 ```python
 # Get market depth
-market_depth = api.markets.get_depth("ADAUSDX")
+market_depth = api.market.get_depth("ADAUSDX")
 print(market_depth_response)
 
 # Get market price
-market_price_response = api.markets.get_market_price("ADAUSDX")
+market_price_response = api.market.get_market_price("ADAUSDX")
 print(market_price_response)
 ```
 
