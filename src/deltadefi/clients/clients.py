@@ -1,10 +1,9 @@
 # flake8: noqa: E501
 from sidan_gin import HDWallet
 
-from deltadefi.api_resources.auth import ApiHeaders
 from deltadefi.clients.accounts import Accounts
 from deltadefi.clients.app import App
-from deltadefi.clients.markets import Markets
+from deltadefi.clients.market import Market
 from deltadefi.clients.order import Order
 from deltadefi.responses import PostOrderResponse
 
@@ -43,7 +42,7 @@ class ApiClient:
         self.accounts = Accounts(base_url=base_url, api_key=api_key)
         self.app = App(base_url=base_url, api_key=api_key)
         self.order = Order(base_url=base_url, api_key=api_key)
-        self.markets = Markets(base_url=base_url, api_key=api_key)
+        self.market = Market(base_url=base_url, api_key=api_key)
 
     async def post_order(self, **kwargs) -> PostOrderResponse:
         """

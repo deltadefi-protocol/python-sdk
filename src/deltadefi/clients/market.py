@@ -11,7 +11,7 @@ from deltadefi.responses import (
 )
 
 
-class Markets(API):
+class Market(API):
     """
     Markets client for interacting with the DeltaDeFi API.
     """
