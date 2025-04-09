@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "deltadefi-python-sdk"
-version = "0.1.0"
+name = "deltadefi"
+version = "0.0.1"
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
