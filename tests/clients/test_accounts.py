@@ -1,31 +1,38 @@
 # flake8: noqa
-# get api_key from env
 import os
 import unittest
 
 from deltadefi.clients import ApiClient
 from deltadefi.responses import GetAccountBalanceResponse
-
-api_key = os.getenv("DELTADEFI_API_KEY")
+from deltadefi.responses.accounts import GetOperationKeyResponse
 
 
 class TestAccounts(unittest.TestCase):
 
-    def test_get_account_balance(self):
+    def setUp(self):
+        api_key = os.getenv("DELTADEFI_API_KEY")
+        base_url = os.getenv("BASE_URL", "http://localhost:8080")
+        print(api_key)
         if not api_key:
             self.skipTest("DELTADEFI_API_KEY not set in environment variables")
+        self.api = ApiClient(api_key=api_key, base_url=base_url)
 
-        # Arrange
-        api = ApiClient(api_key=api_key)
+    def test_get_operation_key(self):
+        response: GetOperationKeyResponse = self.api.accounts.get_operation_key()
 
-        # Act
-        response: GetAccountBalanceResponse = api.accounts.get_account_balance()
+        # Assert
+        print(f"response: {response}")
+        self.assertIn("encrypted_operation_key", response)
+        self.assertIn("operation_key_hash", response)
+
+    def test_get_account_balance(self):
+        response: GetAccountBalanceResponse = self.api.accounts.get_account_balance()
         print(f"response: {response}")
 
-        # # Assert
-        # print(f"response: {response}")
-        # self.assertIn("token", response)
-        # self.assertIn("is_first_time", response)
+    # # Assert
+    # print(f"response: {response}")
+    # self.assertIn("token", response)
+    # self.assertIn("is_first_time", response)
 
 
 if __name__ == "__main__":

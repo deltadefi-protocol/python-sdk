@@ -30,14 +30,16 @@ class ApiClient:
         """
         if network == "mainnet":
             self.network_id = 1
-            base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
+            self.base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
         else:
             self.network_id = 0
-            base_url = "https://api-dev.deltadefi.io"
+            self.base_url = "https://api-dev.deltadefi.io"
+
+        if base_url:
+            self.base_url = base_url
 
         self.api_key = api_key
         self.wallet = wallet
-        self.base_url = base_url
 
         self.accounts = Accounts(base_url=base_url, api_key=api_key)
         self.app = App(base_url=base_url, api_key=api_key)

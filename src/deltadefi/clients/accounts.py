@@ -16,6 +16,7 @@ from deltadefi.responses import (
     SubmitDepositTransactionResponse,
     SubmitWithdrawalTransactionResponse,
 )
+from deltadefi.responses.accounts import GetOperationKeyResponse
 
 
 class Accounts(API):
@@ -27,6 +28,17 @@ class Accounts(API):
 
     def __init__(self, api_key=None, base_url=None, **kwargs):
         super().__init__(api_key=api_key, base_url=base_url, **kwargs)
+
+    def get_operation_key(self, **kwargs) -> GetOperationKeyResponse:
+        """
+        Get the encrypted operation key.
+
+        Returns:
+            A GetOperationKeyResponse object containing the encrypted operation key and its hash.
+        """
+
+        url_path = "/operation-key"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
     def create_new_api_key(self, **kwargs) -> CreateNewAPIKeyResponse:
         """

@@ -15,6 +15,12 @@ class CreateNewAPIKeyResponse:
 
 
 @dataclass
+class GetOperationKeyResponse:
+    encrypted_operation_key: str
+    operation_key_hash: str
+
+
+@dataclass
 class BuildDepositTransactionResponse:
     tx_hex: str
 
