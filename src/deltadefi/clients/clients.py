@@ -33,7 +33,7 @@ class ApiClient:
             self.base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
         else:
             self.network_id = 0
-            self.base_url = "https://api-dev.deltadefi.io"
+            self.base_url = "https://api-staging.deltadefi.io"
 
         if base_url:
             self.base_url = base_url
