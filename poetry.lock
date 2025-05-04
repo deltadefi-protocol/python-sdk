@@ -1700,14 +1700,14 @@ type = ["importlib_metadata (>=7.0.2)", "jaraco.develop (>=7.21)", "mypy (==1.14
 
 [[package]]
 name = "sidan-gin"
-version = "0.1.2"
+version = "0.1.5"
 description = "A python library for Cardano development, compatible with Mesh and Whisky types."
 optional = false
 python-versions = "<4.0.0,>3.11"
 groups = ["main"]
 files = [
-    {file = "sidan_gin-0.1.2-py3-none-any.whl", hash = "sha256:236bc68f6715047856e584ccfeb8efffaa8065910de47776c4fd76dd2de78e60"},
-    {file = "sidan_gin-0.1.2.tar.gz", hash = "sha256:aa46f4eeb69b4c1376c234829b615809807d17d559b93d34b1cf04bb801d0959"},
+    {file = "sidan_gin-0.1.5-py3-none-any.whl", hash = "sha256:150953952fa8fb2d22ab79611e59a2121e9b295c8cf90d94c0b7da20514f60de"},
+    {file = "sidan_gin-0.1.5.tar.gz", hash = "sha256:20f16a1a71f88406d9c9d413ec649e94fe5a622e0bfd8a6f1c8db7c4a481afd9"},
 ]
 
 [package.dependencies]
@@ -2094,4 +2094,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">3.11,<4.0.0"
-content-hash = "5e6c75f4ca11d342fa985c80a3f870d662a52d47b4be2da0e953dcf5488c2ee2"
+content-hash = "06a974308f9535cdbd5348689e7f1300aaa1ba5b1eb11d9753b67cedc680cc31"
