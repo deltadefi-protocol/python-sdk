@@ -42,10 +42,10 @@ class ApiClient:
         self.api_key = api_key
         self.wallet = wallet
 
-        self.accounts = Accounts(base_url=base_url, api_key=api_key)
-        self.app = App(base_url=base_url, api_key=api_key)
-        self.order = Order(base_url=base_url, api_key=api_key)
-        self.market = Market(base_url=base_url, api_key=api_key)
+        self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
+        self.app = App(base_url=self.base_url, api_key=api_key)
+        self.order = Order(base_url=self.base_url, api_key=api_key)
+        self.market = Market(base_url=self.base_url, api_key=api_key)
 
     def post_order(
         self, symbol: str, side: OrderSide, type: OrderType, quantity: int, **kwargs
