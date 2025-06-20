@@ -66,9 +66,6 @@ class ApiClient:
         Raises:
             ValueError: If the wallet is not initialized.
         """
-        print(
-            f"post_order: symbol={symbol}, side={side}, type={type}, quantity={quantity}, kwargs={kwargs}"
-        )
         if not hasattr(self, "wallet") or self.wallet is None:
             raise ValueError("Wallet is not initialized")
 

@@ -1,10 +1,11 @@
 #
-from typing import List
+from typing import List, Literal
 
 from sidan_gin import Asset, UTxO
 
 from deltadefi.api import API
 from deltadefi.lib.utils import check_required_parameter, check_required_parameters
+from deltadefi.models.models import OrderStatusType
 from deltadefi.responses import (
     BuildDepositTransactionResponse,
     BuildWithdrawalTransactionResponse,
@@ -71,15 +72,26 @@ class Accounts(API):
         url_path = "/withdrawal-records"
         return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
-    def get_order_records(self, **kwargs) -> GetOrderRecordResponse:
+    def get_order_records(
+        self, status: OrderStatusType, **kwargs
+    ) -> GetOrderRecordResponse:
         """
         Get order records.
+
+        Args:
+            status: The status of the order records to retrieve. It can be "openOrder",
+                    "orderHistory", or "tradingHistory".
+            limit: Optional; The maximum number of records to return. Defaults to 10, max 250.
+            page: Optional; The page number for pagination. Defaults to 1.
 
         Returns:
             A GetOrderRecordResponse object containing the order records.
         """
+        check_required_parameter(status, "status")
+        payload = {"status": status, **kwargs}
+
         url_path = "/order-records"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return self.send_request("GET", self.group_url_path + url_path, payload)
 
     def get_account_balance(self, **kwargs) -> GetAccountBalanceResponse:
         """

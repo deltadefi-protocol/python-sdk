@@ -61,8 +61,3 @@ class PostOrderResponse(SubmitPlaceOrderTransactionResponse):
 @dataclass
 class BuildCancelOrderTransactionResponse(TypedDict):
     tx_hex: str
-
-
-@dataclass
-class SubmitCancelOrderTransactionResponse(TypedDict):
-    tx_hash: str

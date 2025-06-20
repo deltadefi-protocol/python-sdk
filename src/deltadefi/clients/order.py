@@ -4,7 +4,6 @@ from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import (
     BuildCancelOrderTransactionResponse,
     BuildPlaceOrderTransactionResponse,
-    SubmitCancelOrderTransactionResponse,
     SubmitPlaceOrderTransactionResponse,
 )
 
@@ -105,17 +104,12 @@ class Order(API):
         url_path = "/submit"
         return self.send_request("POST", self.group_url_path + url_path, payload)
 
-    def submit_cancel_order_transaction(
-        self, signed_tx: str, **kwargs
-    ) -> SubmitCancelOrderTransactionResponse:
+    def submit_cancel_order_transaction(self, signed_tx: str, **kwargs):
         """
         Submit a cancel order transaction.
 
         Args:
             data: A SubmitCancelOrderTransactionRequest object containing the cancel order details.
-
-        Returns:
-            A SubmitCancelOrderTransactionResponse object containing the submitted cancel order transaction.
         """
         check_required_parameter(signed_tx, "signed_tx")
         payload = {"signed_tx": signed_tx, **kwargs}

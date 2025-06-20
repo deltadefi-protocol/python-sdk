@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Literal
 
-from sidan_gin import Asset
+OrderStatusType = Literal["openOrder", "orderHistory", "tradingHistory"]
 
-OrderStatus = Literal["building", "open", "closed", "failed"]
+OrderStatus = Literal[
+    "open", "fully_filled", "partially_filled", "cancelled", "partially_cancelled"
+]
 
 OrderSide = Literal["buy", "sell"]
 
@@ -18,6 +20,13 @@ OrderTypes = {
     "MarketOrder": "market",
     "LimitOrder": "limit",
 }
+
+
+@dataclass
+class AssetRecord:
+    asset: str
+    asset_unit: str
+    qty: float
 
 
 @dataclass
@@ -50,7 +59,7 @@ class OrderJSON:
 class DepositRecord:
     created_at: str
     status: TransactionStatus
-    assets: List[Asset]
+    assets: List[AssetRecord]
     tx_hash: str
 
 
@@ -58,7 +67,7 @@ class DepositRecord:
 class WithdrawalRecord:
     created_at: str
     status: TransactionStatus
-    assets: List[Asset]
+    assets: List[AssetRecord]
 
 
 @dataclass
@@ -66,3 +75,18 @@ class AssetBalance:
     asset: str
     free: int
     locked: int
+
+
+@dataclass
+class OrderFillingRecordJSON:
+    execution_id: str
+    order_id: str
+    status: OrderStatus
+    symbol: str
+    executed_qty: str
+    side: OrderSide
+    type: OrderType
+    fee_charged: str
+    fee_unit: str
+    executed_price: float
+    created_time: int

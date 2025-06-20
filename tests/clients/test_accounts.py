@@ -29,6 +29,12 @@ class TestAccounts(unittest.TestCase):
         response: GetAccountBalanceResponse = self.api.accounts.get_account_balance()
         print(f"response: {response}")
 
+    def test_get_order_records(self):
+        response: GetAccountBalanceResponse = self.api.accounts.get_order_records(
+            "openOrder"
+        )
+        print(f"response: {response}")
+
     # # Assert
     # print(f"response: {response}")
     # self.assertIn("token", response)

@@ -4,6 +4,7 @@ from typing import List, TypedDict
 from deltadefi.models.models import (
     AssetBalance,
     DepositRecord,
+    OrderFillingRecordJSON,
     OrderJSON,
     WithdrawalRecord,
 )
@@ -43,6 +44,7 @@ class GetWithdrawalRecordsResponse(List[WithdrawalRecord]):
 @dataclass
 class GetOrderRecordResponse(TypedDict):
     orders: List[OrderJSON]
+    order_filling_records: List[OrderFillingRecordJSON]
 
 
 @dataclass

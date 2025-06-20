@@ -51,11 +51,11 @@ The Market client allows you to interact with market-related endpoints.
 
 ```python
 # Get market depth
-market_depth = api.market.get_depth("ADAUSDX")
+market_depth = api.market.get_depth("ADAUSDM")
 print(market_depth_response)
 
 # Get market price
-market_price_response = api.market.get_market_price("ADAUSDX")
+market_price_response = api.market.get_market_price("ADAUSDM")
 print(market_price_response)
 ```
 
@@ -66,7 +66,7 @@ The Order client allows you to interact with order-related endpoints.
 ```python
 # Build place order transaction
 place_order_request = BuildPlaceOrderTransactionRequest(pair="BTC/USD", amount=1, price=50000)
-place_order_response = api.order.build_place_order_transaction(symbol="ADAUSDX", amount=50, price=0.75, type="limit")
+place_order_response = api.order.build_place_order_transaction(symbol="ADAUSDM", amount=50, price=0.75, type="limit")
 print(place_order_response)
 
 # Submit place order transaction
