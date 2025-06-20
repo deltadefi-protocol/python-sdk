@@ -18,13 +18,14 @@ license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = ">3.11,<4.0.0"  
-sidan-gin = "0.1.2"
+sidan-gin = "0.1.6"
 requests = "^2.25"
 certifi = "2024.8.30"
 charset-normalizer = "3.4.0"
 idna = "3.10"
 urllib3 = "2.2.3"
 pycardano = "^0.12.3"
+dotenv = "^0.9.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.0"

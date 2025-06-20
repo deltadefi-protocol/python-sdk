@@ -7,7 +7,7 @@ cov-html: cov ## check code coverage and generate an html report
 	$(BROWSER) cov_html/index.html
 
 test: ## runs tests
-	poetry run pytest -vv
+	poetry run dotenv run -- pytest -vv
 
 clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
@@ -23,7 +23,6 @@ docs: ## build the documentation
 format: ## runs code style and formatter
 	poetry run isort .
 	poetry run black .
-
 
 deps:
 	poetry lock

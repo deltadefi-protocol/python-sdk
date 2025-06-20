@@ -1,33 +1,33 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, TypedDict
 
 from deltadefi.models import OrderJSON
 
 
 @dataclass
-class GetTermsAndConditionResponse:
+class GetTermsAndConditionResponse(TypedDict):
     value: str
 
 
 @dataclass
-class MarketDepth:
+class MarketDepth(TypedDict):
     price: float
     quantity: float
 
 
 @dataclass
-class GetMarketDepthResponse:
+class GetMarketDepthResponse(TypedDict):
     bids: List[MarketDepth]
     asks: List[MarketDepth]
 
 
 @dataclass
-class GetMarketPriceResponse:
+class GetMarketPriceResponse(TypedDict):
     price: float
 
 
 @dataclass
-class Trade:
+class Trade(TypedDict):
     time: str
     symbol: str
     open: float
@@ -43,13 +43,13 @@ class GetAggregatedPriceResponse(List[Trade]):
 
 
 @dataclass
-class BuildPlaceOrderTransactionResponse:
+class BuildPlaceOrderTransactionResponse(TypedDict):
     order_id: str
     tx_hex: str
 
 
 @dataclass
-class SubmitPlaceOrderTransactionResponse:
+class SubmitPlaceOrderTransactionResponse(TypedDict):
     order: OrderJSON
 
 
@@ -59,10 +59,10 @@ class PostOrderResponse(SubmitPlaceOrderTransactionResponse):
 
 
 @dataclass
-class BuildCancelOrderTransactionResponse:
+class BuildCancelOrderTransactionResponse(TypedDict):
     tx_hex: str
 
 
 @dataclass
-class SubmitCancelOrderTransactionResponse:
+class SubmitCancelOrderTransactionResponse(TypedDict):
     tx_hash: str

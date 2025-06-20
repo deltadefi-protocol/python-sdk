@@ -1,10 +1,11 @@
 # flake8: noqa: E501
-from sidan_gin import HDWallet
+from sidan_gin import Wallet
 
 from deltadefi.clients.accounts import Accounts
 from deltadefi.clients.app import App
 from deltadefi.clients.market import Market
 from deltadefi.clients.order import Order
+from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import PostOrderResponse
 
 
@@ -17,7 +18,7 @@ class ApiClient:
         self,
         network: str = "preprod",
         api_key: str = None,
-        wallet: HDWallet = None,
+        wallet: Wallet = None,
         base_url: str = None,
     ):
         """
@@ -25,7 +26,7 @@ class ApiClient:
 
         Args:
             config: An instance of ApiConfig containing the API configuration.
-            wallet: An instance of HDWallet for signing transactions.
+            wallet: An instance of Wallet for signing transactions.
             base_url: Optional; The base URL for the API. Defaults to "https://api-dev.deltadefi.io".
         """
         if network == "mainnet":
@@ -46,12 +47,18 @@ class ApiClient:
         self.order = Order(base_url=base_url, api_key=api_key)
         self.market = Market(base_url=base_url, api_key=api_key)
 
-    async def post_order(self, **kwargs) -> PostOrderResponse:
+    def post_order(
+        self, symbol: str, side: OrderSide, type: OrderType, quantity: int, **kwargs
+    ) -> PostOrderResponse:
         """
-        Post an order to the DeltaDeFi API.
+        Post an order to the DeltaDeFi API. It includes building the transaction, signing it with the wallet, and submitting it.
 
         Args:
-            data: A PostOrderRequest object containing the order details.
+            symbol: The trading pair symbol (e.g., "BTC-USD").
+            side: The side of the order (e.g., "buy" or "sell").
+            type: The type of the order (e.g., "limit" or "market").
+            quantity: The quantity of the asset to be traded.
+            **kwargs: Additional parameters for the order, such as price, limit_slippage, etc.
 
         Returns:
             A PostOrderResponse object containing the response from the API.
@@ -59,10 +66,19 @@ class ApiClient:
         Raises:
             ValueError: If the wallet is not initialized.
         """
+        print(
+            f"post_order: symbol={symbol}, side={side}, type={type}, quantity={quantity}, kwargs={kwargs}"
+        )
         if not hasattr(self, "wallet") or self.wallet is None:
             raise ValueError("Wallet is not initialized")
 
-        build_res = ""  # TODO: import wallet build order
+        build_res = self.order.build_place_order_transaction(
+            symbol, side, type, quantity, **kwargs
+        )
+        print(f"build_res: {build_res}")
         signed_tx = self.wallet.sign_tx(build_res["tx_hex"])
-        submit_res = signed_tx + ""  # TODO: import wallet submit tx
+        submit_res = self.order.submit_place_order_transaction(
+            build_res["order_id"], signed_tx, **kwargs
+        )
+        print(f"submit_res: {submit_res}")
         return submit_res

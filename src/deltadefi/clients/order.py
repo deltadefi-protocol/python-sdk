@@ -31,7 +31,11 @@ class Order(API):
         Build a place order transaction.
 
         Args:
-            data: A BuildPlaceOrderTransactionRequest object containing the order details.
+            symbol: The trading pair symbol (e.g., "BTC-USD").
+            side: The side of the order (e.g., "buy" or "sell").
+            type: The type of the order (e.g., "limit" or "market").
+            quantity: The quantity of the asset to be traded.
+            **kwargs: Additional parameters for the order, such as price, limit_slippage, etc.
 
         Returns:
             A BuildPlaceOrderTransactionResponse object containing the built order transaction.

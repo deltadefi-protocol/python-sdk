@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, TypedDict
 
 from deltadefi.models.models import (
     AssetBalance,
@@ -10,23 +10,23 @@ from deltadefi.models.models import (
 
 
 @dataclass
-class CreateNewAPIKeyResponse:
+class CreateNewAPIKeyResponse(TypedDict):
     api_key: str
 
 
 @dataclass
-class GetOperationKeyResponse:
+class GetOperationKeyResponse(TypedDict):
     encrypted_operation_key: str
     operation_key_hash: str
 
 
 @dataclass
-class BuildDepositTransactionResponse:
+class BuildDepositTransactionResponse(TypedDict):
     tx_hex: str
 
 
 @dataclass
-class SubmitDepositTransactionResponse:
+class SubmitDepositTransactionResponse(TypedDict):
     tx_hash: str
 
 
@@ -41,22 +41,22 @@ class GetWithdrawalRecordsResponse(List[WithdrawalRecord]):
 
 
 @dataclass
-class GetOrderRecordResponse:
+class GetOrderRecordResponse(TypedDict):
     orders: List[OrderJSON]
 
 
 @dataclass
-class BuildWithdrawalTransactionResponse:
+class BuildWithdrawalTransactionResponse(TypedDict):
     tx_hex: str
 
 
 @dataclass
-class SubmitWithdrawalTransactionResponse:
+class SubmitWithdrawalTransactionResponse(TypedDict):
     tx_hash: str
 
 
 @dataclass
-class GetAccountInfoResponse:
+class GetAccountInfoResponse(TypedDict):
     api_key: str
     api_limit: int
     created_at: str
