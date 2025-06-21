@@ -28,11 +28,8 @@ from sidan_gin import HDWallet
 network="preprod",
 api_key="your_api_key",
 
-# Initialize HDWallet
-wallet = HDWallet("your_wallet_mnemonic")
-
 # Initialize ApiClient
-api = ApiClient(network=network, api_key=api_key, wallet=wallet)
+api = ApiClient(network=network, api_key=api_key)
 ```
 
 ### Accounts
@@ -45,33 +42,40 @@ account_balance = api.accounts.get_account_balance()
 print(account_balance)
 ```
 
-### Market
+### Markets
 
 The Market client allows you to interact with market-related endpoints.
 
 ```python
 # Get market depth
-market_depth = api.market.get_depth("ADAUSDM")
+market_depth = api.markets.get_depth("ADAUSDM")
 print(market_depth_response)
 
 # Get market price
-market_price_response = api.market.get_market_price("ADAUSDM")
+market_price_response = api.markets.get_market_price("ADAUSDM")
 print(market_price_response)
 ```
 
-### Order
+### Orders
 
 The Order client allows you to interact with order-related endpoints.
 
 ```python
-# Build place order transaction
-place_order_request = BuildPlaceOrderTransactionRequest(pair="BTC/USD", amount=1, price=50000)
-place_order_response = api.order.build_place_order_transaction(symbol="ADAUSDM", amount=50, price=0.75, type="limit")
-print(place_order_response)
+api_key = os.environ.get("DELTADEFI_API_KEY")
+password = os.environ.get("TRADING_PASSWORD")
 
-# Submit place order transaction
-submit_order_response = api.order.submit_place_order_transaction(signed_tx="<signed_tx>", order_id="<order_id>")
-print(submit_order_response)
+api = ApiClient(api_key=api_key)
+api.load_operation_key(password)
+
+res = api.post_order(
+    symbol="ADAUSDM",
+    side="sell",
+    type="limit",
+    quantity=51,
+    price=15,
+)
+
+print("Order submitted successfully.", res)
 ```
 
 ## Development
