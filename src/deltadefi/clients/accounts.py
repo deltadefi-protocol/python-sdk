@@ -1,5 +1,5 @@
 #
-from typing import List, Literal
+from typing import List
 
 from sidan_gin import Asset, UTxO
 

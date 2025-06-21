@@ -1,10 +1,10 @@
 # flake8: noqa: E501
-from sidan_gin import Wallet
+from sidan_gin import Wallet, decrypt_with_cipher
 
 from deltadefi.clients.accounts import Accounts
 from deltadefi.clients.app import App
-from deltadefi.clients.market import Market
-from deltadefi.clients.order import Order
+from deltadefi.clients.markets import Market
+from deltadefi.clients.orders import Order
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import PostOrderResponse
 
@@ -18,8 +18,8 @@ class ApiClient:
         self,
         network: str = "preprod",
         api_key: str = None,
-        wallet: Wallet = None,
         base_url: str = None,
+        master_wallet: Wallet = None,
     ):
         """
         Initialize the ApiClient.
@@ -40,12 +40,26 @@ class ApiClient:
             self.base_url = base_url
 
         self.api_key = api_key
-        self.wallet = wallet
+        self.master_wallet = master_wallet
 
         self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
         self.app = App(base_url=self.base_url, api_key=api_key)
-        self.order = Order(base_url=self.base_url, api_key=api_key)
-        self.market = Market(base_url=self.base_url, api_key=api_key)
+        self.orders = Order(base_url=self.base_url, api_key=api_key)
+        self.markets = Market(base_url=self.base_url, api_key=api_key)
+
+    def load_operation_key(self, password: str):
+        """
+        Load the operation key from the wallet using the provided password.
+
+        Args:
+            password: The password to decrypt the operation key.
+
+        Returns:
+            The decrypted operation key.
+        """
+        res = self.accounts.get_operation_key()
+        operation_key = decrypt_with_cipher(res["encrypted_operation_key"], password)
+        self.operation_wallet = Wallet.new_root_key(operation_key)
 
     def post_order(
         self, symbol: str, side: OrderSide, type: OrderType, quantity: int, **kwargs
@@ -58,7 +72,9 @@ class ApiClient:
             side: The side of the order (e.g., "buy" or "sell").
             type: The type of the order (e.g., "limit" or "market").
             quantity: The quantity of the asset to be traded.
-            **kwargs: Additional parameters for the order, such as price, limit_slippage, etc.
+            price: Required for limit order; The price for limit orders.
+            limit_slippage: Optional; Whether to apply slippage for market orders. Defaults to False.
+            max_slippage_basis_point: Optional; The maximum slippage in basis points for market orders. Defaults to null.
 
         Returns:
             A PostOrderResponse object containing the response from the API.
@@ -66,16 +82,29 @@ class ApiClient:
         Raises:
             ValueError: If the wallet is not initialized.
         """
-        if not hasattr(self, "wallet") or self.wallet is None:
-            raise ValueError("Wallet is not initialized")
+        if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
+            raise ValueError("Operation wallet is not initialized")
 
-        build_res = self.order.build_place_order_transaction(
+        build_res = self.orders.build_place_order_transaction(
             symbol, side, type, quantity, **kwargs
         )
-        print(f"build_res: {build_res}")
-        signed_tx = self.wallet.sign_tx(build_res["tx_hex"])
-        submit_res = self.order.submit_place_order_transaction(
+        signed_tx = self.operation_wallet.sign_tx(build_res["tx_hex"])
+        submit_res = self.orders.submit_place_order_transaction(
             build_res["order_id"], signed_tx, **kwargs
         )
-        print(f"submit_res: {submit_res}")
         return submit_res
+
+    def cancel_order(self, order_id: str, **kwargs):
+        """
+        Cancel an order by its ID.
+
+        Args:
+            order_id: The ID of the order to be canceled.
+        """
+        if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
+            raise ValueError("Operation wallet is not initialized")
+
+        build_res = self.orders.build_cancel_order_transaction(order_id)
+        signed_tx = self.operation_wallet.sign_tx(build_res["tx_hex"])
+        self.orders.submit_cancel_order_transaction(signed_tx, **kwargs)
+        return {"message": "Order cancelled successfully", "order_id": order_id}
