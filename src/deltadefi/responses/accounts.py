@@ -53,7 +53,17 @@ class BuildWithdrawalTransactionResponse(TypedDict):
 
 
 @dataclass
+class BuildTransferalTransactionResponse(TypedDict):
+    tx_hex: str
+
+
+@dataclass
 class SubmitWithdrawalTransactionResponse(TypedDict):
+    tx_hash: str
+
+
+@dataclass
+class SubmitTransferalTransactionResponse(TypedDict):
     tx_hash: str
 
 

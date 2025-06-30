@@ -17,7 +17,11 @@ from deltadefi.responses import (
     SubmitDepositTransactionResponse,
     SubmitWithdrawalTransactionResponse,
 )
-from deltadefi.responses.accounts import GetOperationKeyResponse
+from deltadefi.responses.accounts import (
+    BuildTransferalTransactionResponse,
+    GetOperationKeyResponse,
+    SubmitTransferalTransactionResponse,
+)
 
 
 class Accounts(API):
@@ -147,6 +151,31 @@ class Accounts(API):
         url_path = "/withdrawal/build"
         return self.send_request("POST", self.group_url_path + url_path, payload)
 
+    def build_transferal_transaction(
+        self, transferal_amount: List[Asset], to_address: str, **kwargs
+    ) -> BuildTransferalTransactionResponse:
+        """
+        Build a transferal transaction.
+
+        Args:
+            data: A BuildTransferalTransactionRequest object containing the transferal transaction details.
+
+        Returns:
+            A BuildTransferalTransactionResponse object containing the built transferal transaction.
+        """
+
+        check_required_parameter(
+            transferal_amount, "transferal_amount", to_address, "to_address"
+        )
+        payload = {
+            "transferal_amount": transferal_amount,
+            "to_address": to_address,
+            **kwargs,
+        }
+
+        url_path = "/transferal/build"
+        return self.send_request("POST", self.group_url_path + url_path, payload)
+
     def submit_deposit_transaction(
         self, signed_tx: str, **kwargs
     ) -> SubmitDepositTransactionResponse:
@@ -183,4 +212,23 @@ class Accounts(API):
         payload = {"signed_tx": signed_tx, **kwargs}
 
         url_path = "/withdrawal/submit"
+        return self.send_request("POST", self.group_url_path + url_path, payload)
+
+    def submit_transferal_transaction(
+        self, signed_tx: str, **kwargs
+    ) -> SubmitTransferalTransactionResponse:
+        """
+        Submit a transferal transaction.
+
+        Args:
+            data: A SubmitTransferalTransactionRequest object containing the transferal transaction details.
+
+        Returns:
+            A SubmitTransferalTransactionResponse object containing the submitted transferal transaction.
+        """
+
+        check_required_parameter(signed_tx, "signed_tx")
+        payload = {"signed_tx": signed_tx, **kwargs}
+
+        url_path = "/transferal/submit"
         return self.send_request("POST", self.group_url_path + url_path, payload)
