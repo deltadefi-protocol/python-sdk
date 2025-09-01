@@ -9,7 +9,7 @@ from deltadefi.error import (
 
 def clean_none_value(d) -> dict:
     out = {}
-    for k in d.keys():
+    for k in d:
         if d[k] is not None:
             out[k] = d[k]
     return out
@@ -33,7 +33,7 @@ def check_required_parameters(params):
 
 
 def check_enum_parameter(value, enum_class):
-    if value not in set(item.value for item in enum_class):
+    if value not in {item.value for item in enum_class}:
         raise ParameterValueError([value])
 
 

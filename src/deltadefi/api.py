@@ -3,7 +3,7 @@ import json
 import requests
 
 from deltadefi.error import ClientError, ServerError
-from deltadefi.lib.utils import clean_none_value, encoded_string
+from deltadefi.utils import clean_none_value, encoded_string
 
 
 class API:

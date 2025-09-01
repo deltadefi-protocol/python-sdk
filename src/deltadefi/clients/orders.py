@@ -1,11 +1,11 @@
 from deltadefi.api import API
-from deltadefi.lib.utils import check_required_parameter, check_required_parameters
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import (
     BuildCancelOrderTransactionResponse,
     BuildPlaceOrderTransactionResponse,
     SubmitPlaceOrderTransactionResponse,
 )
+from deltadefi.utils import check_required_parameter, check_required_parameters
 
 
 class Order(API):

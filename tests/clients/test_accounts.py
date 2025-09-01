@@ -2,19 +2,22 @@
 import os
 import unittest
 
+import dotenv
+
 from deltadefi.clients import ApiClient
 from deltadefi.responses import GetAccountBalanceResponse
 from deltadefi.responses.accounts import GetOperationKeyResponse
+
+dotenv.load_dotenv()
 
 
 class TestAccounts(unittest.TestCase):
     def setUp(self):
         api_key = os.getenv("DELTADEFI_API_KEY")
-        base_url = os.getenv("BASE_URL", "http://localhost:8080")
         print(api_key)
         if not api_key:
             self.skipTest("DELTADEFI_API_KEY not set in environment variables")
-        self.api = ApiClient(api_key=api_key, base_url=base_url)
+        self.api = ApiClient(api_key=api_key)
 
     def test_get_operation_key(self):
         response: GetOperationKeyResponse = self.api.accounts.get_operation_key()

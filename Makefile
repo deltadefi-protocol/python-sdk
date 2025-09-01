@@ -59,7 +59,7 @@ cov-html: cov ## Check code coverage and generate HTML report [test]
 	@$(UV) run coverage html -d cov_html
 	@echo "Coverage report generated in cov_html/"
 
-# 🏗️  Building & Distribution  
+# 🏗️  Building & Distribution
 build: install ## Build the package [build]
 	@$(UV) build
 
@@ -83,3 +83,12 @@ clean: clean-test ## Remove caches, build artifacts, and temp files
 version: ## Show uv and Python versions
 	@$(UV) --version
 	@$(UV) run $(PY) -c "import platform; print('Python', platform.python_version())"
+
+precommit-install: ## Install pre-commit hooks
+	@$(UV) run pre-commit install
+
+precommit: ## Run pre-commit hooks on all files
+	@$(UV) run pre-commit run --all-files
+
+precommit-update: ## Update pre-commit hooks
+	@$(UV) run pre-commit autoupdate

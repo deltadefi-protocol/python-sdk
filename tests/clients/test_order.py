@@ -2,20 +2,23 @@
 import os
 import unittest
 
-from sidan_gin import Wallet
+import dotenv
 
 from deltadefi.clients import ApiClient
 from deltadefi.responses import PostOrderResponse
+
+dotenv.load_dotenv()
 
 
 class TestOrder(unittest.TestCase):
     def setUp(self):
         api_key = os.getenv("DELTADEFI_API_KEY")
         password = os.getenv("TRADING_PASSWORD")
-        base_url = os.getenv("BASE_URL", "http://localhost:8080")
         if not api_key:
             self.skipTest("DELTADEFI_API_KEY not set in environment variables")
-        api = ApiClient(api_key=api_key, base_url=base_url)
+        if not password:
+            self.skipTest("TRADING_PASSWORD not set in environment variables")
+        api = ApiClient(api_key=api_key)
         api.load_operation_key(password)
         self.api = api
 

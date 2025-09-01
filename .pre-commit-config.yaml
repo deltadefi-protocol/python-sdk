@@ -1,0 +1,67 @@
+repos:
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+
+  # Ruff for linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # MyPy for type checking (lenient for now)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.17.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests]
+        args: [--ignore-missing-imports, --disable-error-code=no-any-return, --disable-error-code=call-arg]
+
+  # Custom hooks for project-specific checks
+  - repo: local
+    hooks:
+      # Install dependencies
+      - id: uv-sync
+        name: Install dependencies
+        entry: uv sync --dev
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Run tests
+      - id: pytest
+        name: Run tests
+        entry: uv run pytest
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Build package
+      - id: uv-build
+        name: Build package
+        entry: uv build --out-dir .pre-commit-build
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Clean up build artifacts
+      - id: cleanup-build
+        name: Clean build artifacts
+        entry: rm -rf .pre-commit-build
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+# Configure which hooks run at different stages
+default_stages: [pre-commit]

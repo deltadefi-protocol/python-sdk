@@ -3,7 +3,6 @@
 from sidan_gin import Asset, UTxO
 
 from deltadefi.api import API
-from deltadefi.lib.utils import check_required_parameter, check_required_parameters
 from deltadefi.models.models import OrderStatusType
 from deltadefi.responses import (
     BuildDepositTransactionResponse,
@@ -22,6 +21,7 @@ from deltadefi.responses.accounts import (
     GetOrderRecordsResponse,
     SubmitTransferalTransactionResponse,
 )
+from deltadefi.utils import check_required_parameter, check_required_parameters
 
 
 class Accounts(API):
