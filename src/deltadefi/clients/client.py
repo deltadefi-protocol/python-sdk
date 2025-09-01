@@ -3,6 +3,7 @@ from sidan_gin import Wallet, decrypt_with_cipher
 from deltadefi.clients.accounts import Accounts
 from deltadefi.clients.markets import Market
 from deltadefi.clients.orders import Order
+from deltadefi.clients.websocket import WebSocketClient
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import PostOrderResponse
 
@@ -43,6 +44,14 @@ class ApiClient:
         self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
         self.orders = Order(base_url=self.base_url, api_key=api_key)
         self.markets = Market(base_url=self.base_url, api_key=api_key)
+        
+        # Initialize WebSocket client with correct stream URL
+        if network == "mainnet":
+            ws_base_url = "wss://stream.deltadefi.io"  # TODO: Update when mainnet is available
+        else:
+            ws_base_url = "wss://stream-staging.deltadefi.io"
+            
+        self.websocket = WebSocketClient(base_url=ws_base_url, api_key=api_key)
 
     def load_operation_key(self, password: str):
         """

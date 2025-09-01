@@ -31,6 +31,7 @@ dependencies = [
     "urllib3>=2.2.3",
     "pycardano>=0.12.3",
     "python-dotenv>=0.9.9",
+    "websockets>=12.0",
 ]
 
 [dependency-groups]

@@ -1,2 +1,2 @@
 # flake8: noqa
-from .clients import ApiClient
+from .clients import ApiClient, WebSocketClient
