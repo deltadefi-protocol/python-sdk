@@ -1,7 +1,8 @@
 import asyncio
+from collections.abc import Callable
 import json
 import logging
-from typing import Any, Callable, Dict, Optional
+from typing import Any
 
 import websockets
 
@@ -22,7 +23,7 @@ class WebSocketClient:
     def __init__(
         self,
         base_url: str = "wss://stream-staging.deltadefi.io",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         auto_reconnect: bool = True,
         reconnect_interval: int = 5,
         ping_interval: int = 20,
@@ -46,9 +47,9 @@ class WebSocketClient:
         self.ping_interval = ping_interval
         self.ping_timeout = ping_timeout
 
-        self.websocket: Optional[websockets.WebSocketServerProtocol] = None
-        self.subscriptions: Dict[str, Dict[str, Any]] = {}
-        self.message_handlers: Dict[str, Callable] = {}
+        self.websocket: websockets.WebSocketServerProtocol | None = None
+        self.subscriptions: dict[str, dict[str, Any]] = {}
+        self.message_handlers: dict[str, Callable] = {}
         self.is_connected = False
         self.should_stop = False
 
@@ -82,11 +83,11 @@ class WebSocketClient:
             self.logger.info(f"WebSocket connected successfully to {url}")
 
             # Start message listening loop
-            asyncio.create_task(self._listen_messages())
+            self._listen_task = asyncio.create_task(self._listen_messages())
 
         except Exception as e:
             self.logger.error(f"Failed to connect to WebSocket: {e}")
-            raise ClientError(0, "WS_CONNECTION_ERROR", str(e), {}, None)
+            raise ClientError(0, "WS_CONNECTION_ERROR", str(e), {}, None) from e
 
     async def disconnect(self) -> None:
         """Close WebSocket connection."""
@@ -198,7 +199,7 @@ class WebSocketClient:
             if self.auto_reconnect and not self.should_stop:
                 await self._reconnect()
 
-    async def _send_message(self, message: Dict[str, Any]) -> None:
+    async def _send_message(self, message: dict[str, Any]) -> None:
         """Send message to WebSocket server."""
         if not self.websocket or not self.is_connected:
             raise ClientError(
@@ -209,7 +210,7 @@ class WebSocketClient:
             await self.websocket.send(json.dumps(message))
         except Exception as e:
             self.logger.error(f"Failed to send message: {e}")
-            raise ClientError(0, "WS_SEND_ERROR", str(e), {}, None)
+            raise ClientError(0, "WS_SEND_ERROR", str(e), {}, None) from e
 
     def register_handler(self, stream_type: str, handler: Callable) -> None:
         """

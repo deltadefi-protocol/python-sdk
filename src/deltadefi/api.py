@@ -73,10 +73,10 @@ class API:
         if 400 <= status_code < 500:
             try:
                 err = json.loads(response.text)
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
                 raise ClientError(
                     status_code, None, response.text, response.headers, None
-                )
+                ) from e
             error_data = None
             if "data" in err:
                 error_data = err["data"]

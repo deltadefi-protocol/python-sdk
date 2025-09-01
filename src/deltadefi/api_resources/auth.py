@@ -1,16 +1,15 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
 class AuthHeaders:
     jwt: str
-    apiKey: str
+    api_key: str
 
 
 class ApiHeaders:
     __annotations__ = {
         "Content-Type": str,
-        "Authorization": Optional[str],
-        "X-API-KEY": Optional[str],
+        "Authorization": str | None,
+        "X-API-KEY": str | None,
     }

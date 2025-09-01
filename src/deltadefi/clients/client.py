@@ -16,9 +16,9 @@ class ApiClient:
     def __init__(
         self,
         network: str = "preprod",
-        api_key: str = None,
-        base_url: str = None,
-        master_wallet: Wallet = None,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        master_wallet: Wallet | None = None,
     ):
         """
         Initialize the ApiClient.
@@ -44,13 +44,15 @@ class ApiClient:
         self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
         self.orders = Order(base_url=self.base_url, api_key=api_key)
         self.markets = Market(base_url=self.base_url, api_key=api_key)
-        
+
         # Initialize WebSocket client with correct stream URL
         if network == "mainnet":
-            ws_base_url = "wss://stream.deltadefi.io"  # TODO: Update when mainnet is available
+            ws_base_url = (
+                "wss://stream.deltadefi.io"  # TODO: Update when mainnet is available
+            )
         else:
             ws_base_url = "wss://stream-staging.deltadefi.io"
-            
+
         self.websocket = WebSocketClient(base_url=ws_base_url, api_key=api_key)
 
     def load_operation_key(self, password: str):
