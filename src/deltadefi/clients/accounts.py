@@ -1,5 +1,4 @@
 #
-from typing import List
 
 from sidan_gin import Asset, UTxO
 
@@ -12,7 +11,6 @@ from deltadefi.responses import (
     CreateNewAPIKeyResponse,
     GetAccountBalanceResponse,
     GetDepositRecordsResponse,
-    GetOrderRecordResponse,
     GetWithdrawalRecordsResponse,
     SubmitDepositTransactionResponse,
     SubmitWithdrawalTransactionResponse,
@@ -20,6 +18,8 @@ from deltadefi.responses import (
 from deltadefi.responses.accounts import (
     BuildTransferalTransactionResponse,
     GetOperationKeyResponse,
+    GetOrderRecordResponse,
+    GetOrderRecordsResponse,
     SubmitTransferalTransactionResponse,
 )
 
@@ -78,7 +78,7 @@ class Accounts(API):
 
     def get_order_records(
         self, status: OrderStatusType, **kwargs
-    ) -> GetOrderRecordResponse:
+    ) -> GetOrderRecordsResponse:
         """
         Get order records.
 
@@ -89,13 +89,28 @@ class Accounts(API):
             page: Optional; The page number for pagination. Defaults to 1.
 
         Returns:
-            A GetOrderRecordResponse object containing the order records.
+            A GetOrderRecordsResponse object containing the order records.
         """
         check_required_parameter(status, "status")
         payload = {"status": status, **kwargs}
 
         url_path = "/order-records"
         return self.send_request("GET", self.group_url_path + url_path, payload)
+
+    def get_order_record(self, order_id: str, **kwargs) -> GetOrderRecordResponse:
+        """
+        Get a single order record by order ID.
+
+        Args:
+            order_id: The ID of the order to retrieve.
+
+        Returns:
+            A GetOrderRecordResponse object containing the order record.
+        """
+        check_required_parameter(order_id, "order_id")
+
+        url_path = f"/order/{order_id}"
+        return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
     def get_account_balance(self, **kwargs) -> GetAccountBalanceResponse:
         """
@@ -108,7 +123,7 @@ class Accounts(API):
         return self.send_request("GET", self.group_url_path + url_path, kwargs)
 
     def build_deposit_transaction(
-        self, deposit_amount: List[Asset], input_utxos: List[UTxO], **kwargs
+        self, deposit_amount: list[Asset], input_utxos: list[UTxO], **kwargs
     ) -> BuildDepositTransactionResponse:
         """
         Build a deposit transaction.
@@ -133,7 +148,7 @@ class Accounts(API):
         return self.send_request("POST", self.group_url_path + url_path, payload)
 
     def build_withdrawal_transaction(
-        self, withdrawal_amount: List[Asset], **kwargs
+        self, withdrawal_amount: list[Asset], **kwargs
     ) -> BuildWithdrawalTransactionResponse:
         """
         Build a withdrawal transaction.
@@ -152,7 +167,7 @@ class Accounts(API):
         return self.send_request("POST", self.group_url_path + url_path, payload)
 
     def build_transferal_transaction(
-        self, transferal_amount: List[Asset], to_address: str, **kwargs
+        self, transferal_amount: list[Asset], to_address: str, **kwargs
     ) -> BuildTransferalTransactionResponse:
         """
         Build a transferal transaction.

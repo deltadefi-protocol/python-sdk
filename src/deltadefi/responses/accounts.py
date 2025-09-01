@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, TypedDict
+from typing import TypedDict
 
 from deltadefi.models.models import (
     AssetBalance,
@@ -32,19 +32,31 @@ class SubmitDepositTransactionResponse(TypedDict):
 
 
 @dataclass
-class GetDepositRecordsResponse(List[DepositRecord]):
+class GetDepositRecordsResponse(list[DepositRecord]):
     pass
 
 
 @dataclass
-class GetWithdrawalRecordsResponse(List[WithdrawalRecord]):
+class GetWithdrawalRecordsResponse(list[WithdrawalRecord]):
     pass
+
+
+@dataclass
+class OrderRecordsData(TypedDict):
+    orders: list[OrderJSON]
+    order_filling_records: list[OrderFillingRecordJSON]
+
+
+@dataclass
+class GetOrderRecordsResponse(TypedDict):
+    data: list[OrderRecordsData]
+    total_count: int
+    total_page: int
 
 
 @dataclass
 class GetOrderRecordResponse(TypedDict):
-    orders: List[OrderJSON]
-    order_filling_records: List[OrderFillingRecordJSON]
+    order_json: OrderJSON
 
 
 @dataclass
@@ -76,5 +88,5 @@ class GetAccountInfoResponse(TypedDict):
 
 
 @dataclass
-class GetAccountBalanceResponse(List[AssetBalance]):
+class GetAccountBalanceResponse(list[AssetBalance]):
     pass

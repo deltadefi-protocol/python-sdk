@@ -1,14 +1,9 @@
-# flake8: noqa: E501
 
 from typing import Literal
 
 from deltadefi.api import API
 from deltadefi.lib.utils import check_required_parameter, check_required_parameters
-from deltadefi.responses import (
-    GetAggregatedPriceResponse,
-    GetMarketDepthResponse,
-    GetMarketPriceResponse,
-)
+from deltadefi.responses import GetAggregatedPriceResponse, GetMarketPriceResponse
 
 
 class Market(API):
@@ -20,23 +15,6 @@ class Market(API):
 
     def __init__(self, api_key=None, base_url=None, **kwargs):
         super().__init__(api_key=api_key, base_url=base_url, **kwargs)
-
-    def get_depth(self, symbol: str, **kwargs) -> GetMarketDepthResponse:
-        """
-        Get market depth.
-
-        Args:
-            data: A GetMarketDepthRequest object containing the market pair.
-
-        Returns:
-            A GetMarketDepthResponse object containing the market depth.
-        """
-
-        check_required_parameter(symbol, "symbol")
-        payload = {"symbol": symbol, **kwargs}
-        url_path = "/depth"
-
-        return self.send_request("GET", self.group_url_path + url_path, payload)
 
     def get_market_price(self, symbol: str, **kwargs) -> GetMarketPriceResponse:
         """
@@ -78,7 +56,7 @@ class Market(API):
                 [end, "end"],
             ]
         )
-        url_path = f"/aggregated-trade/{symbol}"
+        url_path = f"/graph/{symbol}"
         return self.send_request(
             "GET",
             self.group_url_path + url_path,

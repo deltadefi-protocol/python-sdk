@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, TypedDict
+from typing import TypedDict
 
 from deltadefi.models import OrderJSON
 
@@ -17,8 +17,8 @@ class MarketDepth(TypedDict):
 
 @dataclass
 class GetMarketDepthResponse(TypedDict):
-    bids: List[MarketDepth]
-    asks: List[MarketDepth]
+    bids: list[MarketDepth]
+    asks: list[MarketDepth]
 
 
 @dataclass
@@ -38,7 +38,7 @@ class Trade(TypedDict):
 
 
 @dataclass
-class GetAggregatedPriceResponse(List[Trade]):
+class GetAggregatedPriceResponse(list[Trade]):
     pass
 
 

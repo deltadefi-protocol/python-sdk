@@ -9,7 +9,6 @@ from deltadefi.responses import PostOrderResponse
 
 
 class TestOrder(unittest.TestCase):
-
     def setUp(self):
         api_key = os.getenv("DELTADEFI_API_KEY")
         password = os.getenv("TRADING_PASSWORD")

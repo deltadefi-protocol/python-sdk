@@ -6,7 +6,7 @@ from deltadefi.error import ClientError, ServerError
 from deltadefi.lib.utils import clean_none_value, encoded_string
 
 
-class API(object):
+class API:
     def __init__(self, base_url=None, api_key=None, timeout=None, **kwargs):
         self.base_url = base_url
         self.api_key = api_key

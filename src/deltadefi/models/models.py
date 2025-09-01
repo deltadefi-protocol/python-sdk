@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Literal
+from typing import Literal
 
 OrderStatusType = Literal["openOrder", "orderHistory", "tradingHistory"]
 
@@ -59,7 +59,7 @@ class OrderJSON:
 class DepositRecord:
     created_at: str
     status: TransactionStatus
-    assets: List[AssetRecord]
+    assets: list[AssetRecord]
     tx_hash: str
 
 
@@ -67,7 +67,7 @@ class DepositRecord:
 class WithdrawalRecord:
     created_at: str
     status: TransactionStatus
-    assets: List[AssetRecord]
+    assets: list[AssetRecord]
 
 
 @dataclass

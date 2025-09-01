@@ -1,8 +1,6 @@
-# flake8: noqa: E501
 from sidan_gin import Wallet, decrypt_with_cipher
 
 from deltadefi.clients.accounts import Accounts
-from deltadefi.clients.app import App
 from deltadefi.clients.markets import Market
 from deltadefi.clients.orders import Order
 from deltadefi.models.models import OrderSide, OrderType
@@ -43,7 +41,6 @@ class ApiClient:
         self.master_wallet = master_wallet
 
         self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
-        self.app = App(base_url=self.base_url, api_key=api_key)
         self.orders = Order(base_url=self.base_url, api_key=api_key)
         self.markets = Market(base_url=self.base_url, api_key=api_key)
 

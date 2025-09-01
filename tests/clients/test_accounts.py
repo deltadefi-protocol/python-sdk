@@ -8,7 +8,6 @@ from deltadefi.responses.accounts import GetOperationKeyResponse
 
 
 class TestAccounts(unittest.TestCase):
-
     def setUp(self):
         api_key = os.getenv("DELTADEFI_API_KEY")
         base_url = os.getenv("BASE_URL", "http://localhost:8080")
