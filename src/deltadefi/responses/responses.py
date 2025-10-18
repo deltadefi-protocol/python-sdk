@@ -61,3 +61,13 @@ class PostOrderResponse(SubmitPlaceOrderTransactionResponse):
 @dataclass
 class BuildCancelOrderTransactionResponse(TypedDict):
     tx_hex: str
+
+
+@dataclass
+class BuildCancelAllOrdersTransactionResponse(TypedDict):
+    tx_hexes: list[str]
+
+
+@dataclass
+class SubmitCancelAllOrdersTransactionResponse(TypedDict):
+    cancelled_order_ids: list[str]

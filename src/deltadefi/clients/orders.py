@@ -1,8 +1,10 @@
 from deltadefi.api import API
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import (
+    BuildCancelAllOrdersTransactionResponse,
     BuildCancelOrderTransactionResponse,
     BuildPlaceOrderTransactionResponse,
+    SubmitCancelAllOrdersTransactionResponse,
     SubmitPlaceOrderTransactionResponse,
 )
 from deltadefi.utils import check_required_parameter, check_required_parameters
@@ -86,6 +88,19 @@ class Order(API):
         url_path = f"/{order_id}/build"
         return self.send_request("DELETE", self.group_url_path + url_path, **kwargs)
 
+    def build_cancel_all_orders_transaction(
+        self, **kwargs
+    ) -> BuildCancelAllOrdersTransactionResponse:
+        """
+        Build a cancel all orders transaction.
+
+        Returns:
+            A BuildCancelAllOrdersTransactionResponse object containing the built cancel all orders transaction.
+        """
+
+        url_path = "/cancel-all/build"
+        return self.send_request("DELETE", self.group_url_path + url_path, **kwargs)
+
     def submit_place_order_transaction(
         self, order_id: str, signed_tx: str, **kwargs
     ) -> SubmitPlaceOrderTransactionResponse:
@@ -93,7 +108,8 @@ class Order(API):
         Submit a place order transaction.
 
         Args:
-            data: A SubmitPlaceOrderTransactionRequest object containing the order details.
+            order_id: The ID of the order to be placed.
+            signed_tx: The signed transaction hex string for placing the order.
 
         Returns:
             A SubmitPlaceOrderTransactionResponse object containing the submitted order transaction.
@@ -109,10 +125,25 @@ class Order(API):
         Submit a cancel order transaction.
 
         Args:
-            data: A SubmitCancelOrderTransactionRequest object containing the cancel order details.
+            signed_tx: The signed transaction hex string for canceling the order.
         """
         check_required_parameter(signed_tx, "signed_tx")
         payload = {"signed_tx": signed_tx, **kwargs}
 
         path_url = "/submit"
+        return self.send_request("DELETE", self.group_url_path + path_url, payload)
+
+    def submit_cancel_all_orders_transaction(
+        self, signed_txs: list[str], **kwargs
+    ) -> SubmitCancelAllOrdersTransactionResponse:
+        """
+        Submit a cancel all orders transaction.
+
+        Args:
+            signed_txs: A list of signed transaction hex strings for canceling all orders.
+        """
+        check_required_parameter(signed_txs, "signed_txs")
+        payload = {"signed_txs": signed_txs, **kwargs}
+
+        path_url = "/cancel-all/submit"
         return self.send_request("DELETE", self.group_url_path + path_url, payload)
