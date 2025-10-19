@@ -187,10 +187,8 @@ class WebSocketClient:
             # In a more complex implementation, you'd want to handle multiple concurrent subscriptions
             if self.subscriptions:
                 first_sub = next(iter(self.subscriptions.values()))
-                if first_sub.get("type") == "trade":
-                    await self.connect(first_sub["endpoint"])
-                else:
-                    await self.connect()
+                # Always use the stored endpoint for reconnection
+                await self.connect(first_sub["endpoint"])
             else:
                 await self.connect()
 
