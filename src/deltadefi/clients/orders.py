@@ -1,3 +1,5 @@
+from typing import cast
+
 from deltadefi.api import API
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import (
@@ -68,7 +70,10 @@ class Order(API):
         }
 
         url_path = "/build"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "BuildPlaceOrderTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def build_cancel_order_transaction(
         self, order_id: str, **kwargs
@@ -86,7 +91,10 @@ class Order(API):
         check_required_parameter(order_id, "order_id")
 
         url_path = f"/{order_id}/build"
-        return self.send_request("DELETE", self.group_url_path + url_path, **kwargs)
+        return cast(
+            "BuildCancelOrderTransactionResponse",
+            self.send_request("DELETE", self.group_url_path + url_path, **kwargs),
+        )
 
     def build_cancel_all_orders_transaction(
         self, **kwargs
@@ -99,7 +107,10 @@ class Order(API):
         """
 
         url_path = "/cancel-all/build"
-        return self.send_request("DELETE", self.group_url_path + url_path, **kwargs)
+        return cast(
+            "BuildCancelAllOrdersTransactionResponse",
+            self.send_request("DELETE", self.group_url_path + url_path, **kwargs),
+        )
 
     def submit_place_order_transaction(
         self, order_id: str, signed_tx: str, **kwargs
@@ -118,7 +129,10 @@ class Order(API):
         payload = {"order_id": order_id, "signed_tx": signed_tx, **kwargs}
 
         url_path = "/submit"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "SubmitPlaceOrderTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def submit_cancel_order_transaction(self, signed_tx: str, **kwargs):
         """
@@ -146,4 +160,7 @@ class Order(API):
         payload = {"signed_txs": signed_txs, **kwargs}
 
         path_url = "/cancel-all/submit"
-        return self.send_request("DELETE", self.group_url_path + path_url, payload)
+        return cast(
+            "SubmitCancelAllOrdersTransactionResponse",
+            self.send_request("DELETE", self.group_url_path + path_url, payload),
+        )

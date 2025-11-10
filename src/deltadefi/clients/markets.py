@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, cast
 
 from deltadefi.api import API
 from deltadefi.responses import GetAggregatedPriceResponse, GetMarketPriceResponse
@@ -28,7 +28,10 @@ class Market(API):
         check_required_parameter(symbol, "symbol")
         payload = {"symbol": symbol, **kwargs}
         url_path = "/market-price"
-        return self.send_request("GET", self.group_url_path + url_path, payload)
+        return cast(
+            "GetMarketPriceResponse",
+            self.send_request("GET", self.group_url_path + url_path, payload),
+        )
 
     def get_aggregated_price(
         self,
@@ -56,12 +59,15 @@ class Market(API):
             ]
         )
         url_path = f"/graph/{symbol}"
-        return self.send_request(
-            "GET",
-            self.group_url_path + url_path,
-            {
-                "interval": interval,
-                "start": start,
-                "end": end,
-            },
+        return cast(
+            "GetAggregatedPriceResponse",
+            self.send_request(
+                "GET",
+                self.group_url_path + url_path,
+                {
+                    "interval": interval,
+                    "start": start,
+                    "end": end,
+                },
+            ),
         )

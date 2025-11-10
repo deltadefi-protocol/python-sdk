@@ -1,4 +1,5 @@
 #
+from typing import cast
 
 from sidan_gin import Asset, UTxO
 
@@ -43,7 +44,10 @@ class Accounts(API):
         """
 
         url_path = "/operation-key"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "GetOperationKeyResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def create_new_api_key(self, **kwargs) -> CreateNewAPIKeyResponse:
         """
@@ -54,7 +58,10 @@ class Accounts(API):
         """
 
         url_path = "/new-api-key"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "CreateNewAPIKeyResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def get_deposit_records(self, **kwargs) -> GetDepositRecordsResponse:
         """
@@ -64,7 +71,10 @@ class Accounts(API):
             A GetDepositRecordsResponse object containing the deposit records.
         """
         url_path = "/deposit-records"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "GetDepositRecordsResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def get_withdrawal_records(self, **kwargs) -> GetWithdrawalRecordsResponse:
         """
@@ -74,7 +84,10 @@ class Accounts(API):
             A GetWithdrawalRecordsResponse object containing the withdrawal records.
         """
         url_path = "/withdrawal-records"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "GetWithdrawalRecordsResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def get_order_records(
         self, status: OrderStatusType, **kwargs
@@ -95,7 +108,10 @@ class Accounts(API):
         payload = {"status": status, **kwargs}
 
         url_path = "/order-records"
-        return self.send_request("GET", self.group_url_path + url_path, payload)
+        return cast(
+            "GetOrderRecordsResponse",
+            self.send_request("GET", self.group_url_path + url_path, payload),
+        )
 
     def get_order_record(self, order_id: str, **kwargs) -> GetOrderRecordResponse:
         """
@@ -110,7 +126,10 @@ class Accounts(API):
         check_required_parameter(order_id, "order_id")
 
         url_path = f"/order/{order_id}"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "GetOrderRecordResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def get_account_balance(self, **kwargs) -> GetAccountBalanceResponse:
         """
@@ -120,7 +139,10 @@ class Accounts(API):
             A GetAccountBalanceResponse object containing the account balance.
         """
         url_path = "/balance"
-        return self.send_request("GET", self.group_url_path + url_path, kwargs)
+        return cast(
+            "GetAccountBalanceResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
 
     def build_deposit_transaction(
         self, deposit_amount: list[Asset], input_utxos: list[UTxO], **kwargs
@@ -145,7 +167,10 @@ class Accounts(API):
         }
 
         url_path = "/deposit/build"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "BuildDepositTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def build_withdrawal_transaction(
         self, withdrawal_amount: list[Asset], **kwargs
@@ -164,7 +189,10 @@ class Accounts(API):
         payload = {"withdrawal_amount": withdrawal_amount, **kwargs}
 
         url_path = "/withdrawal/build"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "BuildWithdrawalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def build_transferal_transaction(
         self, transferal_amount: list[Asset], to_address: str, **kwargs
@@ -179,8 +207,8 @@ class Accounts(API):
             A BuildTransferalTransactionResponse object containing the built transferal transaction.
         """
 
-        check_required_parameter(
-            transferal_amount, "transferal_amount", to_address, "to_address"
+        check_required_parameters(
+            [[transferal_amount, "transferal_amount"], [to_address, "to_address"]]
         )
         payload = {
             "transferal_amount": transferal_amount,
@@ -189,7 +217,10 @@ class Accounts(API):
         }
 
         url_path = "/transferal/build"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "BuildTransferalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def submit_deposit_transaction(
         self, signed_tx: str, **kwargs
@@ -208,7 +239,10 @@ class Accounts(API):
         payload = {"signed_tx": signed_tx, **kwargs}
 
         url_path = "/deposit/submit"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "SubmitDepositTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def submit_withdrawal_transaction(
         self, signed_tx: str, **kwargs
@@ -227,7 +261,10 @@ class Accounts(API):
         payload = {"signed_tx": signed_tx, **kwargs}
 
         url_path = "/withdrawal/submit"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "SubmitWithdrawalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
 
     def submit_transferal_transaction(
         self, signed_tx: str, **kwargs
@@ -246,4 +283,7 @@ class Accounts(API):
         payload = {"signed_tx": signed_tx, **kwargs}
 
         url_path = "/transferal/submit"
-        return self.send_request("POST", self.group_url_path + url_path, payload)
+        return cast(
+            "SubmitTransferalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )

@@ -18,6 +18,7 @@ class ApiClient:
         network: str = "preprod",
         api_key: str | None = None,
         base_url: str | None = None,
+        ws_url: str | None = None,
         master_wallet: Wallet | None = None,
     ):
         """
@@ -30,13 +31,18 @@ class ApiClient:
         """
         if network == "mainnet":
             self.network_id = 1
-            self.base_url = "https://api-dev.deltadefi.io"  # TODO: input production link once available
+            self.base_url = "https://api.deltadefi.io"
+            self.ws_url = "wss://stream.deltadefi.io"
         else:
             self.network_id = 0
             self.base_url = "https://api-staging.deltadefi.io"
+            self.ws_url = "wss://stream-staging.deltadefi.io"
 
         if base_url:
             self.base_url = base_url
+
+        if ws_url:
+            self.ws_url = ws_url
 
         self.api_key = api_key
         self.master_wallet = master_wallet
@@ -44,16 +50,7 @@ class ApiClient:
         self.accounts = Accounts(base_url=self.base_url, api_key=api_key)
         self.orders = Order(base_url=self.base_url, api_key=api_key)
         self.markets = Market(base_url=self.base_url, api_key=api_key)
-
-        # Initialize WebSocket client with correct stream URL
-        if network == "mainnet":
-            ws_base_url = (
-                "wss://stream.deltadefi.io"  # TODO: Update when mainnet is available
-            )
-        else:
-            ws_base_url = "wss://stream-staging.deltadefi.io"
-
-        self.websocket = WebSocketClient(base_url=ws_base_url, api_key=api_key)
+        self.websocket = WebSocketClient(base_url=self.ws_url, api_key=api_key)
 
     def load_operation_key(self, password: str):
         """
@@ -116,3 +113,25 @@ class ApiClient:
         signed_tx = self.operation_wallet.sign_tx(build_res["tx_hex"])
         self.orders.submit_cancel_order_transaction(signed_tx, **kwargs)
         return {"message": "Order cancelled successfully", "order_id": order_id}
+
+    def cancel_all_orders(self, **kwargs):
+        """
+        Cancel all open orders for the account.
+        """
+        if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
+            raise ValueError("Operation wallet is not initialized")
+
+        build_res = self.orders.build_cancel_all_orders_transaction()
+
+        signed_txs: list[str] = []
+        for tx_hex in build_res["tx_hexes"]:
+            signed_tx = self.operation_wallet.sign_tx(tx_hex)
+            signed_txs.append(signed_tx)
+
+        submit_res = self.orders.submit_cancel_all_orders_transaction(
+            signed_txs, **kwargs
+        )
+        return {
+            "message": "All orders cancelled successfully",
+            "cancelled_order_ids": submit_res["cancelled_order_ids"],
+        }

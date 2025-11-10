@@ -47,7 +47,7 @@ class WebSocketClient:
         self.ping_interval = ping_interval
         self.ping_timeout = ping_timeout
 
-        self.websocket: websockets.WebSocketServerProtocol | None = None
+        self.websocket: websockets.WebSocketClientProtocol | None = None
         self.subscriptions: dict[str, dict[str, Any]] = {}
         self.message_handlers: dict[str, Callable] = {}
         self.is_connected = False
@@ -119,10 +119,14 @@ class WebSocketClient:
         except Exception as e:
             self.logger.error(f"Error in message listener: {e}")
 
-    async def _handle_message(self, message: str) -> None:
+    async def _handle_message(self, message: str | bytes) -> None:
         """Handle incoming WebSocket message."""
         try:
-            data = json.loads(message)
+            # Convert bytes to string if needed
+            message_str = (
+                message.decode("utf-8") if isinstance(message, bytes) else message
+            )
+            data = json.loads(message_str)
 
             # Determine message type based on structure
             if isinstance(data, list) and len(data) > 0 and "timestamp" in data[0]:
@@ -171,7 +175,10 @@ class WebSocketClient:
                 self.logger.debug(f"Unknown message format: {data}")
 
         except json.JSONDecodeError:
-            self.logger.error(f"Failed to parse message: {message}")
+            message_repr = (
+                message.decode("utf-8") if isinstance(message, bytes) else message
+            )
+            self.logger.error(f"Failed to parse message: {message_repr}")
         except Exception as e:
             self.logger.error(f"Error handling message: {e}")
 
