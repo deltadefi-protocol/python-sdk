@@ -1,6 +1,6 @@
 [project]
 name = "deltadefi"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python SDK for DeltaDeFi protocol."
 readme = "README.md"
 requires-python = ">3.11,<4.0.0"
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "sidan-gin>=0.1.6",
+    "sidan-gin>=0.1.7",
     "requests>=2.25.0",
     "certifi>=2024.8.30",
     "charset-normalizer>=3.4.0",

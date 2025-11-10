@@ -435,7 +435,7 @@ wheels = [
 
 [[package]]
 name = "deltadefi"
-version = "1.0.0"
+version = "1.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "certifi" },
@@ -475,7 +475,7 @@ requires-dist = [
     { name = "pycardano", specifier = ">=0.12.3" },
     { name = "python-dotenv", specifier = ">=0.9.9" },
     { name = "requests", specifier = ">=2.25.0" },
-    { name = "sidan-gin", specifier = ">=0.1.6" },
+    { name = "sidan-gin", specifier = ">=0.1.7" },
     { name = "urllib3", specifier = ">=2.2.3" },
     { name = "websockets", specifier = ">=12.0" },
 ]
@@ -1556,7 +1556,7 @@ wheels = [
 
 [[package]]
 name = "sidan-gin"
-version = "0.1.6"
+version = "0.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cardano-python-signing-module" },
@@ -1564,9 +1564,9 @@ dependencies = [
     { name = "pycardano" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/05/c2/3851b5aaca072e3056d13153d233e6595e4853080982288eee3c7c61ffc5/sidan_gin-0.1.6.tar.gz", hash = "sha256:a850a95f528f89ba92590f84b19eaf600b2a1b25413faeb176dfd24006786007", size = 11166, upload-time = "2025-06-18T07:58:58.279Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/1d/ea4ca97212409489961bb249320a03350c5d993579bfd63cdc66d8259622/sidan_gin-0.1.7.tar.gz", hash = "sha256:3b528ce189397dc80222133de39b97334cc674b09988890bb1e324ec05f93bcd", size = 42591, upload-time = "2025-11-10T23:36:56.616Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/30/d1dfea4ab15131b28470f043783680601ac8e737175692eaa2a225728267/sidan_gin-0.1.6-py3-none-any.whl", hash = "sha256:f0fe9681afeb12d7fbc42e0a45a499271a500621a6e3946648b184684ac18ca3", size = 15101, upload-time = "2025-06-18T07:58:57.23Z" },
+    { url = "https://files.pythonhosted.org/packages/12/94/0c14809df05914eee4ed088a4558e3298cd1e3bb10eb6a9730fb32180e9b/sidan_gin-0.1.7-py3-none-any.whl", hash = "sha256:e18e0cc1307cd407ddd50419faffb8af7b9b9da127ed812715b0942ddd441f39", size = 50363, upload-time = "2025-11-10T23:36:55.57Z" },
 ]
 
 [[package]]
