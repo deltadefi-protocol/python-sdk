@@ -25,8 +25,8 @@ from deltadefi.clients import ApiClient
 from sidan_gin import HDWallet
 
 # Initialize API configuration
-network="preprod",
-api_key="your_api_key",
+network = "preprod"
+api_key = "your_api_key"
 
 # Initialize ApiClient
 api = ApiClient(network=network, api_key=api_key)
