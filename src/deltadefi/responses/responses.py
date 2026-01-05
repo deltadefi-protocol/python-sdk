@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TypedDict
 
-from deltadefi.models import OrderJSON
+from deltadefi.models import OrderResponse
 
 
 @dataclass
@@ -50,7 +50,7 @@ class BuildPlaceOrderTransactionResponse(TypedDict):
 
 @dataclass
 class SubmitPlaceOrderTransactionResponse(TypedDict):
-    order: OrderJSON
+    order: OrderResponse
 
 
 @dataclass
@@ -59,15 +59,11 @@ class PostOrderResponse(SubmitPlaceOrderTransactionResponse):
 
 
 @dataclass
-class BuildCancelOrderTransactionResponse(TypedDict):
-    tx_hex: str
+class CancelOrderResponse(TypedDict):
+    order_id: str
 
 
 @dataclass
-class BuildCancelAllOrdersTransactionResponse(TypedDict):
-    tx_hexes: list[str]
-
-
-@dataclass
-class SubmitCancelAllOrdersTransactionResponse(TypedDict):
-    cancelled_order_ids: list[str]
+class CancelAllOrdersResponse(TypedDict):
+    symbol: str
+    order_ids: list[str]

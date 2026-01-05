@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, TypedDict
 
 OrderStatusType = Literal["openOrder", "orderHistory", "tradingHistory"]
 
@@ -21,6 +21,8 @@ OrderTypes = {
     "LimitOrder": "limit",
 }
 
+OrderExecutionRole = Literal["maker", "taker"]
+
 
 @dataclass
 class AssetRecord:
@@ -38,8 +40,56 @@ class TransactionStatus:
     confirmed = "confirmed"
 
 
+class OrderExecutionRecordResponse(TypedDict):
+    """Order execution record representing a single trade execution."""
+
+    id: str
+    order_id: str
+    account_id: str
+    execution_price: str
+    filled_base_qty: str
+    filled_quote_qty: str
+    commission_unit: str
+    commission: str
+    role: OrderExecutionRole
+    counter_party_order_id: str
+    created_at: str
+
+
+class OrderResponse(TypedDict):
+    """Order response with quantities in human-readable format."""
+
+    id: str
+    account_id: str
+    active_order_utxo_id: str | None
+    status: OrderStatus
+    symbol: str
+    base_qty: str
+    quote_qty: str
+    side: OrderSide
+    price: str
+    type: OrderType
+    slippage_bp: int | None
+    market_order_limit_price: str | None
+    locked_base_qty: str
+    locked_quote_qty: str
+    executed_base_qty: str
+    executed_quote_qty: str
+    ob_open_order_base_qty: str
+    commission_unit: str
+    commission: str
+    commission_rate_bp: int
+    executed_price: str
+    created_at: str
+    updated_at: str
+    order_execution_records: list[OrderExecutionRecordResponse] | None
+
+
+# Deprecated: Use OrderResponse instead
 @dataclass
 class OrderJSON:
+    """Deprecated: Use OrderResponse instead."""
+
     order_id: str
     status: OrderStatus
     symbol: str
@@ -77,8 +127,11 @@ class AssetBalance:
     locked: int
 
 
+# Deprecated: Use OrderExecutionRecordResponse instead
 @dataclass
 class OrderFillingRecordJSON:
+    """Deprecated: Use OrderExecutionRecordResponse instead."""
+
     execution_id: str
     order_id: str
     status: OrderStatus
