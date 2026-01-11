@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__github-deltadefi-protocol__search_code"
+    ]
+  }
+}
