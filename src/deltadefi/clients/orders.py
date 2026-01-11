@@ -3,10 +3,9 @@ from typing import cast
 from deltadefi.api import API
 from deltadefi.models.models import OrderSide, OrderType
 from deltadefi.responses import (
-    BuildCancelAllOrdersTransactionResponse,
-    BuildCancelOrderTransactionResponse,
     BuildPlaceOrderTransactionResponse,
-    SubmitCancelAllOrdersTransactionResponse,
+    CancelAllOrdersResponse,
+    CancelOrderResponse,
     SubmitPlaceOrderTransactionResponse,
 )
 from deltadefi.utils import check_required_parameter, check_required_parameters
@@ -27,18 +26,22 @@ class Order(API):
         symbol: str,
         side: OrderSide,
         type: OrderType,
-        quantity: int,
+        base_quantity: str | None = None,
+        quote_quantity: str | None = None,
         **kwargs,
     ) -> BuildPlaceOrderTransactionResponse:
         """
         Build a place order transaction.
 
         Args:
-            symbol: The trading pair symbol (e.g., "BTC-USD").
-            side: The side of the order (e.g., "buy" or "sell").
-            type: The type of the order (e.g., "limit" or "market").
-            quantity: The quantity of the asset to be traded.
-            **kwargs: Additional parameters for the order, such as price, limit_slippage, etc.
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+            side: The side of the order ("buy" or "sell").
+            type: The type of the order ("limit" or "market").
+            base_quantity: The quantity in base asset (e.g., ADA). Mutually exclusive with quote_quantity.
+            quote_quantity: The quantity in quote asset (e.g., USDM). Mutually exclusive with base_quantity.
+            price: Required for limit orders; The price for the order.
+            max_slippage_basis_point: Optional; The maximum slippage in basis points for market orders.
+            post_only: Optional; If True, the order will only be placed if it would be a maker order.
 
         Returns:
             A BuildPlaceOrderTransactionResponse object containing the built order transaction.
@@ -49,67 +52,36 @@ class Order(API):
                 [symbol, "symbol"],
                 [side, "side"],
                 [type, "type"],
-                [quantity, "quantity"],
             ]
         )
 
+        # Validate that exactly one of base_quantity or quote_quantity is provided
+        if base_quantity is None and quote_quantity is None:
+            raise ValueError("Either base_quantity or quote_quantity must be provided")
+        if base_quantity is not None and quote_quantity is not None:
+            raise ValueError(
+                "Only one of base_quantity or quote_quantity can be provided, not both"
+            )
+
         if type == "limit":
             check_required_parameter(kwargs.get("price"), "price")
-
-        if type == "market" and kwargs.get("limit_slippage"):
-            check_required_parameter(
-                kwargs.get("max_slippage_basis_point"), "max_slippage_basis_point"
-            )
 
         payload = {
             "symbol": symbol,
             "side": side,
             "type": type,
-            "quantity": quantity,
             **kwargs,
         }
+
+        if base_quantity is not None:
+            payload["base_quantity"] = base_quantity
+        if quote_quantity is not None:
+            payload["quote_quantity"] = quote_quantity
 
         url_path = "/build"
         return cast(
             "BuildPlaceOrderTransactionResponse",
             self.send_request("POST", self.group_url_path + url_path, payload),
-        )
-
-    def build_cancel_order_transaction(
-        self, order_id: str, **kwargs
-    ) -> BuildCancelOrderTransactionResponse:
-        """
-        Build a cancel order transaction.
-
-        Args:
-            order_id: The ID of the order to be canceled.
-
-        Returns:
-            A BuildCancelOrderTransactionResponse object containing the built cancel order transaction.
-        """
-
-        check_required_parameter(order_id, "order_id")
-
-        url_path = f"/{order_id}/build"
-        return cast(
-            "BuildCancelOrderTransactionResponse",
-            self.send_request("DELETE", self.group_url_path + url_path, **kwargs),
-        )
-
-    def build_cancel_all_orders_transaction(
-        self, **kwargs
-    ) -> BuildCancelAllOrdersTransactionResponse:
-        """
-        Build a cancel all orders transaction.
-
-        Returns:
-            A BuildCancelAllOrdersTransactionResponse object containing the built cancel all orders transaction.
-        """
-
-        url_path = "/cancel-all/build"
-        return cast(
-            "BuildCancelAllOrdersTransactionResponse",
-            self.send_request("DELETE", self.group_url_path + url_path, **kwargs),
         )
 
     def submit_place_order_transaction(
@@ -134,33 +106,40 @@ class Order(API):
             self.send_request("POST", self.group_url_path + url_path, payload),
         )
 
-    def submit_cancel_order_transaction(self, signed_tx: str, **kwargs):
+    def cancel_order(self, order_id: str, **kwargs) -> CancelOrderResponse:
         """
-        Submit a cancel order transaction.
+        Cancel an order by its ID.
 
         Args:
-            signed_tx: The signed transaction hex string for canceling the order.
+            order_id: The ID of the order to be canceled.
+
+        Returns:
+            A CancelOrderResponse object containing the canceled order ID.
         """
-        check_required_parameter(signed_tx, "signed_tx")
-        payload = {"signed_tx": signed_tx, **kwargs}
+        check_required_parameter(order_id, "order_id")
+        payload = {"order_id": order_id, **kwargs}
 
-        path_url = "/submit"
-        return self.send_request("DELETE", self.group_url_path + path_url, payload)
-
-    def submit_cancel_all_orders_transaction(
-        self, signed_txs: list[str], **kwargs
-    ) -> SubmitCancelAllOrdersTransactionResponse:
-        """
-        Submit a cancel all orders transaction.
-
-        Args:
-            signed_txs: A list of signed transaction hex strings for canceling all orders.
-        """
-        check_required_parameter(signed_txs, "signed_txs")
-        payload = {"signed_txs": signed_txs, **kwargs}
-
-        path_url = "/cancel-all/submit"
+        url_path = f"/{order_id}/cancel"
         return cast(
-            "SubmitCancelAllOrdersTransactionResponse",
-            self.send_request("DELETE", self.group_url_path + path_url, payload),
+            "CancelOrderResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
+
+    def cancel_all_orders(self, symbol: str, **kwargs) -> CancelAllOrdersResponse:
+        """
+        Cancel all open orders for a given symbol.
+
+        Args:
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+
+        Returns:
+            A CancelAllOrdersResponse object containing the symbol and canceled order IDs.
+        """
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+
+        url_path = "/cancel-all"
+        return cast(
+            "CancelAllOrdersResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
         )

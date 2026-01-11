@@ -1,5 +1,6 @@
 #
-from typing import cast
+from typing import Literal, cast
+import warnings
 
 from sidan_gin import Asset, UTxO
 
@@ -16,13 +17,27 @@ from deltadefi.responses import (
     SubmitWithdrawalTransactionResponse,
 )
 from deltadefi.responses.accounts import (
+    BuildRequestTransferalTransactionResponse,
     BuildTransferalTransactionResponse,
+    CreateSpotAccountResponse,
+    GetAPIKeyResponse,
+    GetMaxDepositResponse,
+    GetOpenOrdersResponse,
     GetOperationKeyResponse,
     GetOrderRecordResponse,
     GetOrderRecordsResponse,
+    GetSpotAccountResponse,
+    GetTradeOrdersResponse,
+    GetTradesResponse,
+    GetTransferalRecordResponse,
+    GetTransferalRecordsResponse,
+    SubmitRequestTransferalTransactionResponse,
     SubmitTransferalTransactionResponse,
+    UpdateSpotAccountResponse,
 )
 from deltadefi.utils import check_required_parameter, check_required_parameters
+
+TransferalType = Literal["deposit", "withdrawal"]
 
 
 class Accounts(API):
@@ -95,6 +110,9 @@ class Accounts(API):
         """
         Get order records.
 
+        .. deprecated::
+            Use :meth:`get_open_orders`, :meth:`get_trade_orders`, or :meth:`get_trades` instead.
+
         Args:
             status: The status of the order records to retrieve. It can be "openOrder",
                     "orderHistory", or "tradingHistory".
@@ -104,6 +122,12 @@ class Accounts(API):
         Returns:
             A GetOrderRecordsResponse object containing the order records.
         """
+        warnings.warn(
+            "get_order_records is deprecated. Use get_open_orders, get_trade_orders, "
+            "or get_trades instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         check_required_parameter(status, "status")
         payload = {"status": status, **kwargs}
 
@@ -286,4 +310,281 @@ class Accounts(API):
         return cast(
             "SubmitTransferalTransactionResponse",
             self.send_request("POST", self.group_url_path + url_path, payload),
+        )
+
+    def build_request_transferal_transaction(
+        self,
+        transferal_amount: list[Asset],
+        from_address: str,
+        transferal_type: TransferalType,
+        **kwargs,
+    ) -> BuildRequestTransferalTransactionResponse:
+        """
+        Build a request transferal transaction.
+
+        Args:
+            transferal_amount: The list of assets to transfer.
+            from_address: The address to request the transferal from.
+            transferal_type: The type of transferal ("deposit" or "withdrawal").
+
+        Returns:
+            A BuildRequestTransferalTransactionResponse object containing the tx_hex.
+        """
+
+        check_required_parameters(
+            [
+                [transferal_amount, "transferal_amount"],
+                [from_address, "from_address"],
+                [transferal_type, "transferal_type"],
+            ]
+        )
+        payload = {
+            "transferal_amount": transferal_amount,
+            "from_address": from_address,
+            "transferal_type": transferal_type,
+            **kwargs,
+        }
+
+        url_path = "/request-transferal/build"
+        return cast(
+            "BuildRequestTransferalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
+
+    def submit_request_transferal_transaction(
+        self, signed_tx: str, **kwargs
+    ) -> SubmitRequestTransferalTransactionResponse:
+        """
+        Submit a request transferal transaction.
+
+        Args:
+            signed_tx: The signed transaction hex string.
+
+        Returns:
+            A SubmitRequestTransferalTransactionResponse object containing the tx_hash.
+        """
+
+        check_required_parameter(signed_tx, "signed_tx")
+        payload = {"signed_tx": signed_tx, **kwargs}
+
+        url_path = "/request-transferal/submit"
+        return cast(
+            "SubmitRequestTransferalTransactionResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
+
+    def get_spot_account(self, **kwargs) -> GetSpotAccountResponse:
+        """
+        Get the spot account details.
+
+        Returns:
+            A GetSpotAccountResponse object containing the spot account details.
+        """
+        url_path = "/spot-account"
+        return cast(
+            "GetSpotAccountResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
+
+    def create_spot_account(
+        self,
+        user_id: str,
+        encrypted_operation_key: str,
+        operation_key_hash: str,
+        is_script_operation_key: bool,
+        **kwargs,
+    ) -> CreateSpotAccountResponse:
+        """
+        Create a new spot account.
+
+        Args:
+            user_id: The user ID for the spot account.
+            encrypted_operation_key: The encrypted operation key.
+            operation_key_hash: The hash of the operation key.
+            is_script_operation_key: Whether the operation key is a script key.
+
+        Returns:
+            A CreateSpotAccountResponse object containing the created spot account details.
+        """
+        check_required_parameters(
+            [
+                [user_id, "user_id"],
+                [encrypted_operation_key, "encrypted_operation_key"],
+                [operation_key_hash, "operation_key_hash"],
+                [is_script_operation_key, "is_script_operation_key"],
+            ]
+        )
+        payload = {
+            "user_id": user_id,
+            "encrypted_operation_key": encrypted_operation_key,
+            "operation_key_hash": operation_key_hash,
+            "is_script_operation_key": is_script_operation_key,
+            **kwargs,
+        }
+
+        url_path = "/spot-account"
+        return cast(
+            "CreateSpotAccountResponse",
+            self.send_request("POST", self.group_url_path + url_path, payload),
+        )
+
+    def update_spot_account(
+        self,
+        user_id: str,
+        encrypted_operation_key: str,
+        **kwargs,
+    ) -> UpdateSpotAccountResponse:
+        """
+        Update the spot account.
+
+        Args:
+            user_id: The user ID for the spot account.
+            encrypted_operation_key: The new encrypted operation key.
+
+        Returns:
+            An UpdateSpotAccountResponse object containing the updated spot account details.
+        """
+        check_required_parameters(
+            [
+                [user_id, "user_id"],
+                [encrypted_operation_key, "encrypted_operation_key"],
+            ]
+        )
+        payload = {
+            "user_id": user_id,
+            "encrypted_operation_key": encrypted_operation_key,
+            **kwargs,
+        }
+
+        url_path = "/spot-account"
+        return cast(
+            "UpdateSpotAccountResponse",
+            self.send_request("PATCH", self.group_url_path + url_path, payload),
+        )
+
+    def get_transferal_records(self, **kwargs) -> GetTransferalRecordsResponse:
+        """
+        Get transferal records.
+
+        Args:
+            limit: Optional; The maximum number of records to return (1-250).
+            page: Optional; The page number for pagination (1-1000).
+            status: Optional; Filter by status ("pending" or "confirmed").
+
+        Returns:
+            A GetTransferalRecordsResponse object containing the transferal records.
+        """
+        url_path = "/transferal-records"
+        return cast(
+            "GetTransferalRecordsResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
+
+    def get_transferal_record_by_tx_hash(
+        self, tx_hash: str, **kwargs
+    ) -> GetTransferalRecordResponse:
+        """
+        Get a transferal record by transaction hash.
+
+        Args:
+            tx_hash: The transaction hash of the transferal.
+
+        Returns:
+            A GetTransferalRecordResponse object containing the transferal record.
+        """
+        check_required_parameter(tx_hash, "tx_hash")
+
+        url_path = f"/transferal-records/{tx_hash}"
+        return cast(
+            "GetTransferalRecordResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
+
+    def get_api_key(self, **kwargs) -> GetAPIKeyResponse:
+        """
+        Get the current API key details.
+
+        Returns:
+            A GetAPIKeyResponse object containing the API key and created_at timestamp.
+        """
+        url_path = "/api-key"
+        return cast(
+            "GetAPIKeyResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
+
+    def get_max_deposit(self, **kwargs) -> GetMaxDepositResponse:
+        """
+        Get the maximum deposit amount.
+
+        Returns:
+            A GetMaxDepositResponse object containing the max_deposit value.
+        """
+        url_path = "/max-deposit"
+        return cast(
+            "GetMaxDepositResponse",
+            self.send_request("GET", self.group_url_path + url_path, kwargs),
+        )
+
+    def get_open_orders(self, symbol: str, **kwargs) -> GetOpenOrdersResponse:
+        """
+        Get open orders for a given symbol.
+
+        Args:
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+            limit: Optional; The maximum number of records to return (1-250).
+            page: Optional; The page number for pagination (1-1000).
+
+        Returns:
+            A GetOpenOrdersResponse object containing the open orders.
+        """
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+
+        url_path = "/open-orders"
+        return cast(
+            "GetOpenOrdersResponse",
+            self.send_request("GET", self.group_url_path + url_path, payload),
+        )
+
+    def get_trade_orders(self, symbol: str, **kwargs) -> GetTradeOrdersResponse:
+        """
+        Get trade orders (order history) for a given symbol.
+
+        Args:
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+            limit: Optional; The maximum number of records to return (1-250).
+            page: Optional; The page number for pagination (1-1000).
+
+        Returns:
+            A GetTradeOrdersResponse object containing the trade orders.
+        """
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+
+        url_path = "/trade-orders"
+        return cast(
+            "GetTradeOrdersResponse",
+            self.send_request("GET", self.group_url_path + url_path, payload),
+        )
+
+    def get_trades(self, symbol: str, **kwargs) -> GetTradesResponse:
+        """
+        Get account trades (execution records) for a given symbol.
+
+        Args:
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+            limit: Optional; The maximum number of records to return (1-250).
+            page: Optional; The page number for pagination (1-1000).
+
+        Returns:
+            A GetTradesResponse object containing the account trades.
+        """
+        check_required_parameter(symbol, "symbol")
+        payload = {"symbol": symbol, **kwargs}
+
+        url_path = "/trades"
+        return cast(
+            "GetTradesResponse",
+            self.send_request("GET", self.group_url_path + url_path, payload),
         )

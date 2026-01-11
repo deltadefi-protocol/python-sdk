@@ -61,6 +61,7 @@ class API:
             "DELETE": self.session.delete,
             "PUT": self.session.put,
             "POST": self.session.post,
+            "PATCH": self.session.patch,
         }.get(http_method, "GET")
 
     def _prepare_params(self, params):

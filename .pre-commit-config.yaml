@@ -42,7 +42,7 @@ repos:
       # Run tests
       - id: pytest
         name: Run tests
-        entry: uv run pytest
+        entry: uv run python -m pytest
         language: system
         pass_filenames: false
         stages: [pre-commit]

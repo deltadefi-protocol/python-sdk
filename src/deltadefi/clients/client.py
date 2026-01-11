@@ -5,7 +5,11 @@ from deltadefi.clients.markets import Market
 from deltadefi.clients.orders import Order
 from deltadefi.clients.websocket import WebSocketClient
 from deltadefi.models.models import OrderSide, OrderType
-from deltadefi.responses import PostOrderResponse
+from deltadefi.responses import (
+    CancelAllOrdersResponse,
+    CancelOrderResponse,
+    PostOrderResponse,
+)
 
 
 class ApiClient:
@@ -25,9 +29,11 @@ class ApiClient:
         Initialize the ApiClient.
 
         Args:
-            config: An instance of ApiConfig containing the API configuration.
-            wallet: An instance of Wallet for signing transactions.
-            base_url: Optional; The base URL for the API. Defaults to "https://api-dev.deltadefi.io".
+            network: The network to connect to ("mainnet" or "preprod").
+            api_key: The API key for authentication.
+            base_url: Optional; The base URL for the API.
+            ws_url: Optional; The WebSocket URL for streaming.
+            master_wallet: Optional; An instance of Wallet for signing transactions.
         """
         if network == "mainnet":
             self.network_id = 1
@@ -67,31 +73,44 @@ class ApiClient:
         self.operation_wallet = Wallet.new_root_key(operation_key)
 
     def post_order(
-        self, symbol: str, side: OrderSide, type: OrderType, quantity: int, **kwargs
+        self,
+        symbol: str,
+        side: OrderSide,
+        type: OrderType,
+        base_quantity: str | None = None,
+        quote_quantity: str | None = None,
+        **kwargs,
     ) -> PostOrderResponse:
         """
-        Post an order to the DeltaDeFi API. It includes building the transaction, signing it with the wallet, and submitting it.
+        Post an order to the DeltaDeFi API. It includes building the transaction,
+        signing it with the wallet, and submitting it.
 
         Args:
-            symbol: The trading pair symbol (e.g., "BTC-USD").
-            side: The side of the order (e.g., "buy" or "sell").
-            type: The type of the order (e.g., "limit" or "market").
-            quantity: The quantity of the asset to be traded.
-            price: Required for limit order; The price for limit orders.
-            limit_slippage: Optional; Whether to apply slippage for market orders. Defaults to False.
-            max_slippage_basis_point: Optional; The maximum slippage in basis points for market orders. Defaults to null.
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+            side: The side of the order ("buy" or "sell").
+            type: The type of the order ("limit" or "market").
+            base_quantity: The quantity in base asset (e.g., ADA). Mutually exclusive with quote_quantity.
+            quote_quantity: The quantity in quote asset (e.g., USDM). Mutually exclusive with base_quantity.
+            price: Required for limit orders; The price for the order.
+            max_slippage_basis_point: Optional; The maximum slippage in basis points for market orders.
+            post_only: Optional; If True, the order will only be placed if it would be a maker order.
 
         Returns:
             A PostOrderResponse object containing the response from the API.
 
         Raises:
-            ValueError: If the wallet is not initialized.
+            ValueError: If the wallet is not initialized or quantity params are invalid.
         """
         if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
             raise ValueError("Operation wallet is not initialized")
 
         build_res = self.orders.build_place_order_transaction(
-            symbol, side, type, quantity, **kwargs
+            symbol,
+            side,
+            type,
+            base_quantity=base_quantity,
+            quote_quantity=quote_quantity,
+            **kwargs,
         )
         signed_tx = self.operation_wallet.sign_tx(build_res["tx_hex"])
         submit_res = self.orders.submit_place_order_transaction(
@@ -99,39 +118,26 @@ class ApiClient:
         )
         return submit_res
 
-    def cancel_order(self, order_id: str, **kwargs):
+    def cancel_order(self, order_id: str, **kwargs) -> CancelOrderResponse:
         """
         Cancel an order by its ID.
 
         Args:
             order_id: The ID of the order to be canceled.
+
+        Returns:
+            A CancelOrderResponse containing the canceled order ID.
         """
-        if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
-            raise ValueError("Operation wallet is not initialized")
+        return self.orders.cancel_order(order_id, **kwargs)
 
-        build_res = self.orders.build_cancel_order_transaction(order_id)
-        signed_tx = self.operation_wallet.sign_tx(build_res["tx_hex"])
-        self.orders.submit_cancel_order_transaction(signed_tx, **kwargs)
-        return {"message": "Order cancelled successfully", "order_id": order_id}
-
-    def cancel_all_orders(self, **kwargs):
+    def cancel_all_orders(self, symbol: str, **kwargs) -> CancelAllOrdersResponse:
         """
-        Cancel all open orders for the account.
+        Cancel all open orders for a given symbol.
+
+        Args:
+            symbol: The trading pair symbol (e.g., "ADAUSDM").
+
+        Returns:
+            A CancelAllOrdersResponse containing the symbol and canceled order IDs.
         """
-        if not hasattr(self, "operation_wallet") or self.operation_wallet is None:
-            raise ValueError("Operation wallet is not initialized")
-
-        build_res = self.orders.build_cancel_all_orders_transaction()
-
-        signed_txs: list[str] = []
-        for tx_hex in build_res["tx_hexes"]:
-            signed_tx = self.operation_wallet.sign_tx(tx_hex)
-            signed_txs.append(signed_tx)
-
-        submit_res = self.orders.submit_cancel_all_orders_transaction(
-            signed_txs, **kwargs
-        )
-        return {
-            "message": "All orders cancelled successfully",
-            "cancelled_order_ids": submit_res["cancelled_order_ids"],
-        }
+        return self.orders.cancel_all_orders(symbol, **kwargs)
