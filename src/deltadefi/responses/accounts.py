@@ -15,6 +15,7 @@ from deltadefi.models.models import (
 @dataclass
 class CreateNewAPIKeyResponse(TypedDict):
     api_key: str
+    created_at: str
 
 
 @dataclass
@@ -58,9 +59,8 @@ class GetOrderRecordsResponse(TypedDict):
     total_page: int
 
 
-@dataclass
-class GetOrderRecordResponse(TypedDict):
-    order: OrderResponse
+# GetOrderRecordResponse returns OrderResponse directly (not wrapped)
+GetOrderRecordResponse = OrderResponse
 
 
 @dataclass
@@ -139,15 +139,12 @@ class UpdateSpotAccountResponse(TypedDict):
 
 @dataclass
 class TransferalRecord(TypedDict):
-    id: str
-    account_id: str
-    to_address: str
-    status: str
-    transferal_type: str
-    assets: list[dict]
-    tx_hash: str | None
     created_at: str
-    updated_at: str
+    status: str  # "pending" or "confirmed"
+    assets: list[dict]
+    transferal_type: str
+    tx_hash: str
+    direction: str  # "incoming" or "outgoing"
 
 
 @dataclass
@@ -155,9 +152,8 @@ class GetTransferalRecordsResponse(list[TransferalRecord]):
     pass
 
 
-@dataclass
-class GetTransferalRecordResponse(TypedDict):
-    transferal: TransferalRecord
+# GetTransferalRecordResponse returns TransferalRecord directly (not wrapped)
+GetTransferalRecordResponse = TransferalRecord
 
 
 @dataclass

@@ -123,8 +123,9 @@ class WithdrawalRecord:
 @dataclass
 class AssetBalance:
     asset: str
-    free: int
-    locked: int
+    asset_unit: str
+    free: float
+    locked: float
 
 
 # Deprecated: Use OrderExecutionRecordResponse instead

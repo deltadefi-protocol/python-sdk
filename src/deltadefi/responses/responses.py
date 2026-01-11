@@ -48,14 +48,11 @@ class BuildPlaceOrderTransactionResponse(TypedDict):
     tx_hex: str
 
 
-@dataclass
-class SubmitPlaceOrderTransactionResponse(TypedDict):
-    order: OrderResponse
+# SubmitPlaceOrderTransactionResponse returns OrderResponse directly (not wrapped)
+SubmitPlaceOrderTransactionResponse = OrderResponse
 
-
-@dataclass
-class PostOrderResponse(SubmitPlaceOrderTransactionResponse):
-    pass
+# PostOrderResponse is an alias for SubmitPlaceOrderTransactionResponse
+PostOrderResponse = SubmitPlaceOrderTransactionResponse
 
 
 @dataclass
