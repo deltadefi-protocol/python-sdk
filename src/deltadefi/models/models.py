@@ -28,7 +28,7 @@ OrderExecutionRole = Literal["maker", "taker"]
 class AssetRecord:
     asset: str
     asset_unit: str
-    qty: float
+    qty: str
 
 
 @dataclass
@@ -124,8 +124,8 @@ class WithdrawalRecord:
 class AssetBalance:
     asset: str
     asset_unit: str
-    free: float
-    locked: float
+    free: str
+    locked: str
 
 
 # Deprecated: Use OrderExecutionRecordResponse instead
